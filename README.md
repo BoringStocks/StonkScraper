@@ -1,1 +1,1 @@
-# StonksScraper
+# StonkScraper
