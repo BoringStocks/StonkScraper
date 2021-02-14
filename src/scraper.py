@@ -10,6 +10,7 @@ class Scraper:
         self.target = target.upper()
         self.all_data_dict = {}
         self.dict = {}
+        self.scrape_page()
 
 
     def scrape_page(self):
@@ -56,7 +57,6 @@ class Scraper:
         '''Return self.scrape_time'''
 
         self.scrape_time = (datetime.utcnow()).strftime("%d/%m/%y %H:%M:%S")
-        print(f'--------> {self.scrape_time}')
         self.all_data_dict['timestamp'] = self.scrape_time + ' UTC'
         return self.scrape_time
 
@@ -137,7 +137,6 @@ class Scraper:
     def get_all(self):
         '''Create and call all parse methods on Scraper object'''
 
-        self.scrape_page()
         self.all_data_dict['name'] = self.get_name()
         self.all_data_dict['timestamp'] = self.get_time()
         self.all_data_dict['current'] = self.get_current()
@@ -155,8 +154,6 @@ class Scraper:
     
     def get_one(self, method):
         '''Call one method'''
-
-        self.scrape_page()
 
         if method == 'name':
             self.dict['name'] = self.get_name()
