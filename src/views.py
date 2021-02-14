@@ -21,11 +21,35 @@ def get_all(ticker):
         unpacked_json = open('data.json')
         data = json.load(unpacked_json)
 
-        format = "%d/%m/%y %H:%M:%S"
+        format = "%H:%M:%S"
         old_time = data['timestamp']
         new_time = (datetime.utcnow()).strftime(format)
         time_delta = datetime.strptime(
             new_time, format) - datetime.strptime(old_time, format)
+        print(f'Difference in seconds: {time_delta.total_seconds()}')
+
+        # Return old/new scrape depending on time_delta between scrapes
+        if abs(time_delta.total_seconds()) >= 5:
+
+            # return new current, write new data into json
+            print('Returning new scrape')
+            stock = Scraper(ticker)
+
+            if stock.page_content == False:
+                return 'ERROR - invalid stock index'
+
+            stock.get_all()
+
+            # new
+            new_unpacked_json = open('data.json')
+            new_data = json.load(new_unpacked_json)
+
+            return new_data
+
+        else:
+            # return old current
+            print('Returning old scrape')
+            return data
 
     except:
         # Run if no JSON found
@@ -42,27 +66,3 @@ def get_all(ticker):
             json.dump(new_data, stock_json)
 
         return new_data
-
-
-    # Return old/new scrape depending on time_delta between scrapes
-    if time_delta.total_seconds() > 5:
-
-        # return new current, write new data into json
-        print('Returning new scrape')
-        stock = Scraper(ticker)
-
-        if stock.page_content == False:
-            return 'ERROR - invalid stock index'
-
-        stock.get_all()
-
-        # new
-        new_unpacked_json = open('data.json')
-        new_data = json.load(new_unpacked_json)
-
-        return new_data
-
-    else:
-        # return old current
-        print('Returning old scrape')
-        return data

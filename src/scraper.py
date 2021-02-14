@@ -55,8 +55,8 @@ class Scraper:
     def get_time(self):
         '''Return self.scrape_time'''
 
-        self.scrape_time = (datetime.utcnow()).strftime("%d/%m/%y %H:%M:%S")
-        self.dict['timestamp'] = self.scrape_time + ' UTC'
+        self.scrape_time = (datetime.utcnow()).strftime("%H:%M:%S")
+        self.dict['timestamp'] = self.scrape_time
         return self.scrape_time
 
 
