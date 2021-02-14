@@ -46,15 +46,17 @@ class Scraper:
         '''Parse self.page_content for stock name, return self.stock_name'''
 
         self.stock_name = self.page_content.find('h1', attrs={'data-reactid': '7'}).string
-        self.dict['name'] = self.stock_name
-        return self.stock_name
+        split_data = (self.stock_name).split('(')
+        name = split_data[0]
+        self.dict['name'] = name
+        return name
 
 
     def get_time(self):
         '''Return self.scrape_time'''
 
         self.scrape_time = (datetime.utcnow()).strftime("%H:%M:%S")
-        self.all_data_dict['scrape time'] = self.scrape_time + ' UTC'
+        self.all_data_dict['timestamp'] = self.scrape_time + ' UTC'
         return self.scrape_time
 
 
@@ -118,7 +120,7 @@ class Scraper:
         '''Parse self.parse_avg_volume for average volume, return self.avg_volume'''
 
         self.avg_volume = (self.parse_avg_volume.find('span')).string
-        self.all_data_dict['avg volume'] = self.avg_volume
+        self.all_data_dict['avg_volume'] = self.avg_volume
         return self.avg_volume
 
     
@@ -136,13 +138,13 @@ class Scraper:
 
         self.scrape_page()
         self.all_data_dict['name'] = self.get_name()
-        self.all_data_dict['time'] = self.get_time()
+        self.all_data_dict['timestamp'] = self.get_time()
         self.all_data_dict['current'] = self.get_current()
         self.all_data_dict['open'] = self.get_open()
         self.all_data_dict['points_change'] = self.get_points_change()
         self.all_data_dict['cap'] = self.get_cap()
         self.all_data_dict['volume'] = self.get_volume()
-        self.all_data_dict['avg volume'] = self.get_avg_volume()
+        self.all_data_dict['avg_volume'] = self.get_avg_volume()
 
 
         with open('data.json', 'w') as stock_json:
@@ -158,12 +160,12 @@ class Scraper:
 
         if method == 'name':
             self.dict['name'] = self.get_name()
-        elif method == 'time':
-            self.dict['time'] = self.get_time()
+        elif method == 'timestamp':
+            self.dict['timestamp'] = self.get_time()
         elif method == 'current':
             self.dict['current'] = self.get_current()
             self.dict['points_change'] = self.get_points_change()
-            self.dict['time'] = self.get_time()
+            self.dict['timestamp'] = self.get_time()
         elif method == 'open':
             self.dict['open'] = self.get_open()
         elif method == 'cap':
@@ -171,7 +173,7 @@ class Scraper:
         elif method == 'volume':
             self.dict['volume'] = self.get_volume()
         elif method == 'avg_vol':
-            self.dict['avg volume'] = self.get_avg_volume()
+            self.dict['avg_volume'] = self.get_avg_volume()
         else:
             self.dict['error'] = 'Incorrect method call'
 

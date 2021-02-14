@@ -20,7 +20,7 @@ def get_all(ticker):
     data = json.load(unpacked_json)
 
     format = "%H:%M:%S"
-    old_time = data['time']
+    old_time = data['timestamp']
     new_time = (datetime.utcnow()).strftime(format)
     time_delta = datetime.strptime(
         new_time, format) - datetime.strptime(old_time, format)
@@ -34,7 +34,7 @@ def get_all(ticker):
         stock.scrape_page()
 
         if stock.page_content == False:
-            return 'ERROR'
+            return 'ERROR - invalid stock index'
 
         stock.get_all()
 
