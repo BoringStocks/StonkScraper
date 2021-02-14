@@ -3,8 +3,6 @@ from flask import render_template, request, send_file
 from .scraper import Scraper
 import json
 from datetime import datetime
-import os.path
-from os import path
 
 
 @app.route('/')
