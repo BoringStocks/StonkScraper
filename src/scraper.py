@@ -55,7 +55,8 @@ class Scraper:
     def get_time(self):
         '''Return self.scrape_time'''
 
-        self.scrape_time = (datetime.utcnow()).strftime("%H:%M:%S")
+        self.scrape_time = (datetime.utcnow()).strftime("%d/%m/%y %H:%M:%S")
+        print(f'--------> {self.scrape_time}')
         self.all_data_dict['timestamp'] = self.scrape_time + ' UTC'
         return self.scrape_time
 
@@ -145,7 +146,6 @@ class Scraper:
         self.all_data_dict['cap'] = self.get_cap()
         self.all_data_dict['volume'] = self.get_volume()
         self.all_data_dict['avg_volume'] = self.get_avg_volume()
-
 
         with open('data.json', 'w') as stock_json:
             json.dump(self.all_data_dict, stock_json)
