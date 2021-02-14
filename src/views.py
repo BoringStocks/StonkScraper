@@ -14,21 +14,22 @@ def home():
 
 @app.route('/<ticker>')
 def get_all(ticker):
+    print(f'{ticker} requested at {datetime.utcnow()}')
 
     # Detect if json exists, create new json if none found
-    try: 
-        # Unpack json to parse time
+    try:
+        # Unpack old json to parse time
         unpacked_json = open('data.json')
         data = json.load(unpacked_json)
 
+        # Determine difference between old/new timestamps
         format = "%H:%M:%S"
         old_time = data['timestamp']
         new_time = (datetime.utcnow()).strftime(format)
         time_delta = datetime.strptime(
             new_time, format) - datetime.strptime(old_time, format)
-        print(f'Difference in seconds: {time_delta.total_seconds()}')
 
-        # Return old/new scrape depending on time_delta between scrapes
+        # Return new scrape if difference in stamps exceeds 5 secs
         if abs(time_delta.total_seconds()) >= 5:
 
             # return new current, write new data into json
@@ -40,14 +41,14 @@ def get_all(ticker):
 
             stock.get_all()
 
-            # new
+            # Write new scrape to json
             new_unpacked_json = open('data.json')
             new_data = json.load(new_unpacked_json)
 
             return new_data
 
         else:
-            # return old current
+            # return old data if timestamp difference less than 5 secs
             print('Returning old scrape')
             return data
 
@@ -59,9 +60,10 @@ def get_all(ticker):
         if stock.page_content == False:
             return 'ERROR - invalid stock index'
 
+        # Retrieve scrape data
         new_data = stock.get_all()
 
-        # new
+        # Write scrape to new json
         with open('data.json', 'w') as stock_json:
             json.dump(new_data, stock_json)
 
