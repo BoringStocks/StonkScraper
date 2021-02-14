@@ -28,12 +28,11 @@ def get_all(ticker):
         new_time = (datetime.utcnow()).strftime(format)
         time_delta = datetime.strptime(
             new_time, format) - datetime.strptime(old_time, format)
-            
+
     except:
         # Run if no JSON found
         print('No JSON found, creating new JSON with requested index')
         stock = Scraper(ticker)
-        stock.scrape_page()
 
         if stock.page_content == False:
             return 'ERROR - invalid stock index'
@@ -46,13 +45,13 @@ def get_all(ticker):
 
         return new_data
 
+
     # Return old/new scrape depending on time_delta between scrapes
     if time_delta.total_seconds() > 5:
 
         # return new current, write new data into json
         print('Returning new scrape')
         stock = Scraper(ticker)
-        stock.scrape_page()
 
         if stock.page_content == False:
             return 'ERROR - invalid stock index'
