@@ -136,7 +136,7 @@ class Scraper:
     
     def get_range(self):
         '''Return high, low, close of index'''
-
+        
         file = requests.get(f"https://query1.finance.yahoo.com/v7/finance/download/{self.target}")
         decoded = file.content.decode('utf-8')
         csv_reader = csv.reader(decoded.splitlines(), delimiter=',')
@@ -144,6 +144,10 @@ class Scraper:
         data_range = {}
         data_list = list(csv_reader)
 
+        data_range['high'] = data_list[1][2]
+        data_range['low'] = data_list[1][3]
+        data_range['close'] = data_list[1][4]
+        data_range['date'] = data_list[1][0]
         return data_range
 
 
