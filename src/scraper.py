@@ -3,6 +3,7 @@ import json
 from bs4 import BeautifulSoup as bs
 import html5lib
 from datetime import datetime, date
+import csv
 
 class Scraper:
 
@@ -104,7 +105,7 @@ class Scraper:
         '''Parse self.parse_cap for market cap, return self.cap'''
 
         self.cap = (self.parse_cap.contents[0]).string
-        self.dict['cap'] = self.cap
+        self.dict['market_cap'] = self.cap
         return self.cap
 
     
@@ -132,6 +133,23 @@ class Scraper:
         self.embed_content = bs(self.embed_data.content, features='html5lib')
         self.dict['embed content'] = str(self.embed_content)
 
+    
+    def get_range(self):
+        '''Return high, low, close of index'''
+        
+        file = requests.get(f"https://query1.finance.yahoo.com/v7/finance/download/{self.target}")
+        decoded = file.content.decode('utf-8')
+        csv_reader = csv.reader(decoded.splitlines(), delimiter=',')
+
+        data_range = {}
+        data_list = list(csv_reader)
+
+        data_range['high'] = data_list[1][2]
+        data_range['low'] = data_list[1][3]
+        data_range['close'] = data_list[1][4]
+        data_range['date'] = data_list[1][0]
+        return data_range
+
 
     def get_all(self):
         '''Create and call all parse methods on Scraper object'''
@@ -141,9 +159,10 @@ class Scraper:
         self.dict['current'] = self.get_current()
         self.dict['open'] = self.get_open()
         self.dict['points_change'] = self.get_points_change()
-        self.dict['cap'] = self.get_cap()
+        self.dict['market_cap'] = self.get_cap()
         self.dict['volume'] = self.get_volume()
         self.dict['avg_volume'] = self.get_avg_volume()
+        self.dict['range'] = self.get_range()
 
         with open('data.json', 'w') as stock_json:
             json.dump(self.dict, stock_json)
@@ -164,8 +183,8 @@ class Scraper:
             self.dict['timestamp'] = self.get_time()
         elif method == 'open':
             self.dict['open'] = self.get_open()
-        elif method == 'cap':
-            self.dict['cap'] = self.get_cap()
+        elif method == 'market_cap':
+            self.dict['market_cap'] = self.get_cap()
         elif method == 'volume':
             self.dict['volume'] = self.get_volume()
         elif method == 'avg_vol':
