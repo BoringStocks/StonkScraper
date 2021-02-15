@@ -14,48 +14,57 @@ def home():
 
 @app.route('/<ticker>')
 def get_all(ticker):
+    print(f'{ticker} requested at {datetime.utcnow()}')
 
-    # Unpack json to parse time
-    unpacked_json = open('data.json')
-    data = json.load(unpacked_json)
+    # Detect if json exists, create new json if none found
+    try:
+        # Unpack old json to parse time
+        unpacked_json = open('data.json')
+        data = json.load(unpacked_json)
 
-    format = "%H:%M:%S"
-    old_time = data['time']
-    new_time = (datetime.utcnow()).strftime(format)
-    time_delta = datetime.strptime(
-        new_time, format) - datetime.strptime(old_time, format)
+        # Determine difference between old/new timestamps
+        format = "%H:%M:%S"
+        old_time = data['timestamp']
+        new_time = (datetime.utcnow()).strftime(format)
+        time_delta = datetime.strptime(
+            new_time, format) - datetime.strptime(old_time, format)
 
-    # Return old/new scrape depending on time_delta between scrapes
-    if time_delta.total_seconds() > 5:
+        # Return new scrape if difference in stamps exceeds 5 secs
+        if abs(time_delta.total_seconds()) >= 5:
 
-        # return new current, write new data into json
-        print('Returning new scrape')
+            # return new current, write new data into json
+            print('Returning new scrape')
+            stock = Scraper(ticker)
+
+            if stock.page_content == False:
+                return 'ERROR - invalid stock index'
+
+            stock.get_all()
+
+            # Write new scrape to json
+            new_unpacked_json = open('data.json')
+            new_data = json.load(new_unpacked_json)
+
+            return new_data
+
+        else:
+            # return old data if timestamp difference less than 5 secs
+            print('Returning old scrape')
+            return data
+
+    except:
+        # Run if no JSON found
+        print('No JSON found, creating new JSON with requested index')
         stock = Scraper(ticker)
-        stock.scrape_page()
 
         if stock.page_content == False:
-            return 'ERROR'
+            return 'ERROR - invalid stock index'
 
-        stock.get_all()
+        # Retrieve scrape data
+        new_data = stock.get_all()
 
-        # new
-        new_unpacked_json = open('data.json')
-        new_data = json.load(new_unpacked_json)
+        # Write scrape to new json
+        with open('data.json', 'w') as stock_json:
+            json.dump(new_data, stock_json)
 
         return new_data
-
-    else:
-        # return old current
-        print('Returning old scrape')
-        return data
-
-
-@app.route('/<ticker>/name')
-def get_name(ticker):
-    stock = Scraper(ticker)
-    stock.scrape_page()
-
-    if stock.page_content == False:
-        return 'ERROR'
-
-    return stock.get_one('name')
