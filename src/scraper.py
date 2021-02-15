@@ -105,7 +105,7 @@ class Scraper:
         '''Parse self.parse_cap for market cap, return self.cap'''
 
         self.cap = (self.parse_cap.contents[0]).string
-        self.dict['cap'] = self.cap
+        self.dict['market_cap'] = self.cap
         return self.cap
 
     
@@ -159,7 +159,7 @@ class Scraper:
         self.dict['current'] = self.get_current()
         self.dict['open'] = self.get_open()
         self.dict['points_change'] = self.get_points_change()
-        self.dict['cap'] = self.get_cap()
+        self.dict['market_cap'] = self.get_cap()
         self.dict['volume'] = self.get_volume()
         self.dict['avg_volume'] = self.get_avg_volume()
         self.dict['range'] = self.get_range()
@@ -183,8 +183,8 @@ class Scraper:
             self.dict['timestamp'] = self.get_time()
         elif method == 'open':
             self.dict['open'] = self.get_open()
-        elif method == 'cap':
-            self.dict['cap'] = self.get_cap()
+        elif method == 'market_cap':
+            self.dict['market_cap'] = self.get_cap()
         elif method == 'volume':
             self.dict['volume'] = self.get_volume()
         elif method == 'avg_vol':
