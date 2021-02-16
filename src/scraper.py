@@ -146,7 +146,7 @@ class Scraper:
 
         data_range['high'] = round(float(data_list[1][2]), 2)
         data_range['low'] = round(float(data_list[1][3]), 2)
-        data_range['close'] = round(float(data_list[1][3]), 2)
+        data_range['close'] = round(float(data_list[1][4]), 2)
         data_range['date'] = data_list[1][0]
         return data_range
 
