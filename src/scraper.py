@@ -144,9 +144,9 @@ class Scraper:
         data_range = {}
         data_list = list(csv_reader)
 
-        data_range['high'] = data_list[1][2]
-        data_range['low'] = data_list[1][3]
-        data_range['close'] = data_list[1][4]
+        data_range['high'] = round(float(data_list[1][2]), 2)
+        data_range['low'] = round(float(data_list[1][3]), 2)
+        data_range['close'] = round(float(data_list[1][3]), 2)
         data_range['date'] = data_list[1][0]
         return data_range
 
