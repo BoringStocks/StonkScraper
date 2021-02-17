@@ -4,8 +4,6 @@ from flask_api import status
 from .scraper import Scraper, retrieve_historical
 import json
 from datetime import datetime
-from dateutil.relativedelta import relativedelta
-import math
 
 
 @app.route('/')
@@ -73,63 +71,11 @@ def get_all(ticker):
         return new_data
 
 
-@app.route('/<ticker>/historical/max')
-def get_historical_all(ticker):
-    '''Retrieve all known historical data in 1 day increments for stock index'''
-
-    period_2 = math.ceil((datetime.today()).timestamp())
-    url = f'https://query1.finance.yahoo.com/v7/finance/download/{ticker.upper()}?period1=0&period2={period_2}&interval=1d&events=history&includeAdjustedClose=true'
-    
-    data = retrieve_historical(url)
-
-    if not data:
-        return f'{ticker} not found', status.HTTP_400_BAD_REQUEST
-
-    return jsonify(data)
-
-
 @app.route('/<ticker>/historical/5_days')
 def get_historical_5_days(ticker):
     '''Retrieve data spanning 5 days in 1 day increments'''
 
-    # Subtract 7 days of seconds to compensate for weekends
-    period_1 = (datetime.now() - relativedelta(days=7)).timestamp()
-    period_2 = (datetime.today()).timestamp()
-    url = f'https://query1.finance.yahoo.com/v7/finance/download/{ticker.upper()}?period1={math.ceil(period_1)}&period2={math.ceil(period_2)}&interval=1d&events=history&includeAdjustedClose=true'
-    
-    data = retrieve_historical(url)
-
-    if not data:
-        return f'{ticker} not found', status.HTTP_400_BAD_REQUEST
-
-    return jsonify(data)
-
-
-@app.route('/<ticker>/historical/1_year')
-def get_historical_1_year(ticker):
-    '''Retrieve data spanning 1 year in 1 day increments'''
-
-    period_1 = (datetime.now() - relativedelta(years=1)).timestamp()
-    period_2 = (datetime.now()).timestamp()
-    url = f'https://query1.finance.yahoo.com/v7/finance/download/{ticker.upper()}?period1={math.ceil(period_1)}&period2={math.ceil(period_2)}&interval=1d&events=history&includeAdjustedClose=true'
-    
-    data = retrieve_historical(url)
-
-    if not data:
-        return f'{ticker} not found', status.HTTP_400_BAD_REQUEST
-
-    return jsonify(data)
-
-
-@app.route('/<ticker>/historical/6_months')
-def get_historical_6_months(ticker):
-    '''Retrieve data spanning 6 months in 1 day increments'''
-
-    period_1 = (datetime.now() - relativedelta(months=6)).timestamp()
-    period_2 = (datetime.now()).timestamp()
-    url = f'https://query1.finance.yahoo.com/v7/finance/download/{ticker.upper()}?period1={math.ceil(period_1)}&period2={math.ceil(period_2)}&interval=1d&events=history&includeAdjustedClose=true'
-    
-    data = retrieve_historical(url)
+    data = retrieve_historical(ticker, '5_days')
 
     if not data:
         return f'{ticker} not found', status.HTTP_400_BAD_REQUEST
@@ -141,11 +87,43 @@ def get_historical_6_months(ticker):
 def get_historical_1_month(ticker):
     '''Retrieve data spanning 1 months in 1 day increments'''
 
-    period_1 = (datetime.now() - relativedelta(months=1)).timestamp()
-    period_2 = (datetime.now()).timestamp()
-    url = f'https://query1.finance.yahoo.com/v7/finance/download/{ticker.upper()}?period1={math.ceil(period_1)}&period2={math.ceil(period_2)}&interval=1d&events=history&includeAdjustedClose=true'
-    
-    data = retrieve_historical(url)
+    data = retrieve_historical(ticker, '1_month')
+
+    if not data:
+        return f'{ticker} not found', status.HTTP_400_BAD_REQUEST
+
+    return jsonify(data)
+
+
+@app.route('/<ticker>/historical/6_months')
+def get_historical_6_months(ticker):
+    '''Retrieve data spanning 6 months in 1 day increments'''
+
+    data = retrieve_historical(ticker, '6_months')
+
+    if not data:
+        return f'{ticker} not found', status.HTTP_400_BAD_REQUEST
+
+    return jsonify(data)
+
+
+@app.route('/<ticker>/historical/1_year')
+def get_historical_1_year(ticker):
+    '''Retrieve data spanning 1 year in 1 day increments'''
+
+    data = retrieve_historical(ticker, '1_year')
+
+    if not data:
+        return f'{ticker} not found', status.HTTP_400_BAD_REQUEST
+
+    return jsonify(data)
+
+
+@app.route('/<ticker>/historical/max')
+def get_historical_all(ticker):
+    '''Retrieve all known historical data in 1 day increments for stock index'''
+
+    data = retrieve_historical(ticker, 'max')
 
     if not data:
         return f'{ticker} not found', status.HTTP_400_BAD_REQUEST
