@@ -72,59 +72,22 @@ def get_all(ticker):
         return new_data
 
 
-@app.route('/<ticker>/historical/5_days')
-def get_historical_5_days(ticker):
-    '''Retrieve data spanning 5 days in 1 day increments'''
+@app.route('/<ticker>/historical/<data_range>')
+def get_historical(ticker, data_range):
+    '''Retrieve historical data spanning a given range in 1 day increments'''
 
-    data = retrieve_historical(ticker, '5_days')
-
-    if not data:
-        return f'{ticker} not found', status.HTTP_400_BAD_REQUEST
-
-    return jsonify(data)
-
-
-@app.route('/<ticker>/historical/1_month')
-def get_historical_1_month(ticker):
-    '''Retrieve data spanning 1 months in 1 day increments'''
-
-    data = retrieve_historical(ticker, '1_month')
-
-    if not data:
-        return f'{ticker} not found', status.HTTP_400_BAD_REQUEST
-
-    return jsonify(data)
-
-
-@app.route('/<ticker>/historical/6_months')
-def get_historical_6_months(ticker):
-    '''Retrieve data spanning 6 months in 1 day increments'''
-
-    data = retrieve_historical(ticker, '6_months')
-
-    if not data:
-        return f'{ticker} not found', status.HTTP_400_BAD_REQUEST
-
-    return jsonify(data)
-
-
-@app.route('/<ticker>/historical/1_year')
-def get_historical_1_year(ticker):
-    '''Retrieve data spanning 1 year in 1 day increments'''
-
-    data = retrieve_historical(ticker, '1_year')
-
-    if not data:
-        return f'{ticker} not found', status.HTTP_400_BAD_REQUEST
-
-    return jsonify(data)
-
-
-@app.route('/<ticker>/historical/max')
-def get_historical_all(ticker):
-    '''Retrieve all known historical data in 1 day increments for stock index'''
-
-    data = retrieve_historical(ticker, 'max')
+    if data_range == '5_days':
+        data = retrieve_historical(ticker, '5_days')
+    elif data_range == '1_month':
+        data = retrieve_historical(ticker, '1_month')
+    elif data_range == '6_months':
+        data = retrieve_historical(ticker, '6_months')
+    elif data_range == '1_year':
+        data = retrieve_historical(ticker, '1_year')
+    elif data_range == 'max':
+        data = retrieve_historical(ticker, 'max')
+    else:
+        return f'{data_range} invalid. Try 5_days, 1_month, 6_months, 1_year, max', status.HTTP_400_BAD_REQUEST
 
     if not data:
         return f'{ticker} not found', status.HTTP_400_BAD_REQUEST
