@@ -60,7 +60,10 @@ class Scraper:
 
 
     def get_market_status(self):
-        '''Return market status'''
+        '''Return market status:
+            1: Open
+            0: Closed
+        '''
 
         raw_market_status = (self.parse_market_status.find('span')).string
 
