@@ -30,7 +30,7 @@ def get_all(ticker):
             new_time, format) - datetime.strptime(old_time, format)
 
         # Return new scrape if difference in stamps exceeds 5 secs
-        if abs(time_delta.total_seconds()) >= 5:
+        if abs(time_delta.total_seconds()) >= 5 or data['symbol'] != ticker.upper():
 
             # return new current, write new data into json
             print('Returning new scrape')
