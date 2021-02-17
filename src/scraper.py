@@ -54,7 +54,7 @@ class Scraper:
         '''Parse self.page_content for stock name, return self.stock_name'''
 
         self.stock_name = self.page_content.find('h1', attrs={'data-reactid': '7'}).string
-        split_data = (self.stock_name).split('(')
+        split_data = (self.stock_name).split(' (')
         name = split_data[0]
         return name
 
