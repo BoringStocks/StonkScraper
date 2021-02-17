@@ -120,3 +120,19 @@ def get_historical_1_year(ticker):
         return f'Stock index not found', status.HTTP_400_BAD_REQUEST
 
     return Response(json.dumps(data), mimetype='application/json')
+
+
+@app.route('/<ticker>/historical/6_months')
+def get_historical_6_months(ticker):
+    '''Retrieve data spanning 6 months in 1 day increments'''
+
+    todays_date_in_secs = (datetime.now()).timestamp()
+    six_months_ago = (datetime.now() - relativedelta(months=6)).timestamp()
+    url = f'https://query1.finance.yahoo.com/v7/finance/download/{ticker.upper()}?period1={math.ceil(six_months_ago)}&period2={math.ceil(todays_date_in_secs)}&interval=1d&events=history&includeAdjustedClose=true'
+    
+    data = retrieve_historical(url)
+
+    if not data:
+        return f'Stock index not found', status.HTTP_400_BAD_REQUEST
+
+    return Response(json.dumps(data), mimetype='application/json')
