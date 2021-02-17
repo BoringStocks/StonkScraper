@@ -1,5 +1,5 @@
 from src import app
-from flask import render_template, request, send_file, Response
+from flask import render_template, request, send_file, Response, jsonify
 from flask_api import status
 from .scraper import Scraper, retrieve_historical
 import json
@@ -40,7 +40,7 @@ def get_all(ticker):
             stock = Scraper(ticker)
 
             if not stock.page_content:
-                return f'Stock index not found', status.HTTP_400_BAD_REQUEST
+                return f'{ticker} not found', status.HTTP_400_BAD_REQUEST
 
             stock.get_all()
 
@@ -61,7 +61,7 @@ def get_all(ticker):
         stock = Scraper(ticker)
 
         if not stock.page_content:
-            return f'Stock index not found', status.HTTP_400_BAD_REQUEST
+            return f'{ticker} not found', status.HTTP_400_BAD_REQUEST
 
         # Retrieve scrape data
         new_data = stock.get_all()
@@ -83,9 +83,9 @@ def get_historical_all(ticker):
     data = retrieve_historical(url)
 
     if not data:
-        return f'Stock index not found', status.HTTP_400_BAD_REQUEST
+        return f'{ticker} not found', status.HTTP_400_BAD_REQUEST
 
-    return Response(json.dumps(data), mimetype='application/json')
+    return jsonify(data)
 
 
 @app.route('/<ticker>/historical/5_days')
@@ -100,9 +100,9 @@ def get_historical_5_days(ticker):
     data = retrieve_historical(url)
 
     if not data:
-        return f'Stock index not found', status.HTTP_400_BAD_REQUEST
+        return f'{ticker} not found', status.HTTP_400_BAD_REQUEST
 
-    return Response(json.dumps(data), mimetype='application/json')
+    return jsonify(data)
 
 
 @app.route('/<ticker>/historical/1_year')
@@ -116,9 +116,9 @@ def get_historical_1_year(ticker):
     data = retrieve_historical(url)
 
     if not data:
-        return f'Stock index not found', status.HTTP_400_BAD_REQUEST
+        return f'{ticker} not found', status.HTTP_400_BAD_REQUEST
 
-    return Response(json.dumps(data), mimetype='application/json')
+    return jsonify(data)
 
 
 @app.route('/<ticker>/historical/6_months')
@@ -132,9 +132,9 @@ def get_historical_6_months(ticker):
     data = retrieve_historical(url)
 
     if not data:
-        return f'Stock index not found', status.HTTP_400_BAD_REQUEST
+        return f'{ticker} not found', status.HTTP_400_BAD_REQUEST
 
-    return Response(json.dumps(data), mimetype='application/json')
+    return jsonify(data)
 
 
 @app.route('/<ticker>/historical/1_month')
@@ -148,6 +148,6 @@ def get_historical_1_month(ticker):
     data = retrieve_historical(url)
 
     if not data:
-        return f'Stock index not found', status.HTTP_400_BAD_REQUEST
+        return f'{ticker} not found', status.HTTP_400_BAD_REQUEST
 
-    return Response(json.dumps(data), mimetype='application/json')
+    return jsonify(data)
