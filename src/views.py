@@ -1,7 +1,8 @@
 from src import app
 from flask import request, jsonify
 from flask_api import status
-from .scraper import Scraper, retrieve_historical
+from .scraper import Scraper
+from .historical import retrieve_historical
 import json
 from datetime import datetime
 
