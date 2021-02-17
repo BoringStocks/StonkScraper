@@ -4,6 +4,7 @@ from flask_api import status
 from .scraper import Scraper, retrieve_historical
 import json
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
 import math
 
 
@@ -91,11 +92,27 @@ def get_historical_all(ticker):
 def get_historical_5_days(ticker):
     '''Retrieve data spanning 5 days in 1 day increments'''
 
-    todays_date_in_secs = math.ceil((datetime.today()).timestamp())
+    todays_date_in_secs = (datetime.today()).timestamp()
 
     # Subtract 7 days of seconds to compensate for weekends
-    five_days_ago = todays_date_in_secs - 604800
-    url = f'https://query1.finance.yahoo.com/v7/finance/download/{ticker.upper()}?period1={five_days_ago}&period2={todays_date_in_secs}&interval=1d&events=history&includeAdjustedClose=true'
+    five_days_ago = (datetime.now() - relativedelta(days=7)).timestamp()
+    url = f'https://query1.finance.yahoo.com/v7/finance/download/{ticker.upper()}?period1={math.ceil(five_days_ago)}&period2={math.ceil(todays_date_in_secs)}&interval=1d&events=history&includeAdjustedClose=true'
+    
+    data = retrieve_historical(url)
+
+    if not data:
+        return f'Stock index not found', status.HTTP_400_BAD_REQUEST
+
+    return Response(json.dumps(data), mimetype='application/json')
+
+
+@app.route('/<ticker>/historical/1_year')
+def get_historical_1_year(ticker):
+    '''Retrieve data spanning 1 year in 1 day increments'''
+
+    todays_date_in_secs = (datetime.now()).timestamp()
+    one_year_ago = (datetime.now() - relativedelta(years=1)).timestamp()
+    url = f'https://query1.finance.yahoo.com/v7/finance/download/{ticker.upper()}?period1={math.ceil(one_year_ago)}&period2={math.ceil(todays_date_in_secs)}&interval=1d&events=history&includeAdjustedClose=true'
     
     data = retrieve_historical(url)
 
