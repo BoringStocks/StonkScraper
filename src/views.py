@@ -29,7 +29,7 @@ def get_all(ticker):
         time_delta = datetime.strptime(
             new_time, format) - datetime.strptime(old_time, format)
 
-        # Return new scrape if difference in stamps exceeds 5 secs
+        # Return new scrape if difference in stamps exceeds 5 secs or new index is requested
         if abs(time_delta.total_seconds()) >= 5 or data['symbol'] != ticker.upper():
 
             # return new current, write new data into json
