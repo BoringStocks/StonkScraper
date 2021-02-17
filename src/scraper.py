@@ -5,6 +5,28 @@ import html5lib
 from datetime import datetime, date
 import csv
 
+
+def retrieve_historical(url):
+    data = requests.get(url)
+    
+    historical_data = []
+
+    # Check if request failed
+    if not data:
+        return False
+    
+    decoded = data.content.decode('utf-8')
+    csv_reader = csv.DictReader(decoded.splitlines(), delimiter=',')
+
+    for line in csv_reader:
+        single_data_point = {}
+        single_data_point['date'] = line['Date']
+        single_data_point['close'] = line['Close']
+        historical_data.append(single_data_point)
+
+    return historical_data
+
+
 class Scraper:
 
     def __init__(self, target):

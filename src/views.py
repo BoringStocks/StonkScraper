@@ -1,11 +1,10 @@
 from src import app
 from flask import render_template, request, send_file, Response
 from flask_api import status
-from .scraper import Scraper
+from .scraper import Scraper, retrieve_historical
 import json
 from datetime import datetime
-import requests
-import csv
+import math
 
 
 @app.route('/')
@@ -73,26 +72,16 @@ def get_all(ticker):
         return new_data
 
 
-@app.route('/<ticker>/historical/all')
+@app.route('/<ticker>/historical/max')
 def get_historical_all(ticker):
     '''Retrieve all known historical data in 1 day increments for stock index'''
 
-    todays_date_in_secs = (datetime.today()).timestamp()
-    data = requests.get(f'https://query1.finance.yahoo.com/v7/finance/download/{ticker.upper()}?period1=0&period2={todays_date_in_secs}&interval=1d&events=history&includeAdjustedClose=true')
-    
-    historical_data = []
+    todays_date_in_secs = math.ceil((datetime.today()).timestamp())
+    url = f'https://query1.finance.yahoo.com/v7/finance/download/{ticker.upper()}?period1=0&period2={todays_date_in_secs}&interval=1d&events=history&includeAdjustedClose=true'
+    print(url)
+    data = retrieve_historical(url)
 
-    # Check if request failed
     if not data:
         return f'Stock index not found', status.HTTP_400_BAD_REQUEST
-    
-    decoded = data.content.decode('utf-8')
-    csv_reader = csv.DictReader(decoded.splitlines(), delimiter=',')
 
-    for line in csv_reader:
-        single_data_point = {}
-        single_data_point['date'] = line['Date']
-        single_data_point['close'] = line['Close']
-        historical_data.append(single_data_point)
-
-    return Response(json.dumps(historical_data), mimetype='application/json')
+    return Response(json.dumps(data), mimetype='application/json')
