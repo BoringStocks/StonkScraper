@@ -78,7 +78,25 @@ def get_historical_all(ticker):
 
     todays_date_in_secs = math.ceil((datetime.today()).timestamp())
     url = f'https://query1.finance.yahoo.com/v7/finance/download/{ticker.upper()}?period1=0&period2={todays_date_in_secs}&interval=1d&events=history&includeAdjustedClose=true'
-    print(url)
+    
+    data = retrieve_historical(url)
+
+    if not data:
+        return f'Stock index not found', status.HTTP_400_BAD_REQUEST
+
+    return Response(json.dumps(data), mimetype='application/json')
+
+
+@app.route('/<ticker>/historical/5_days')
+def get_historical_5_days(ticker):
+    '''Retrieve data spanning 5 days in 1 day increments'''
+
+    todays_date_in_secs = math.ceil((datetime.today()).timestamp())
+
+    # Subtract 7 days of seconds to compensate for weekends
+    five_days_ago = todays_date_in_secs - 604800
+    url = f'https://query1.finance.yahoo.com/v7/finance/download/{ticker.upper()}?period1={five_days_ago}&period2={todays_date_in_secs}&interval=1d&events=history&includeAdjustedClose=true'
+    
     data = retrieve_historical(url)
 
     if not data:

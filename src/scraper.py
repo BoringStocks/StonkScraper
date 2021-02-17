@@ -21,7 +21,7 @@ def retrieve_historical(url):
     for line in csv_reader:
         single_data_point = {}
         single_data_point['date'] = line['Date']
-        single_data_point['close'] = line['Close']
+        single_data_point['close'] = round(float(line['Close']), 2)
         historical_data.append(single_data_point)
 
     return historical_data
