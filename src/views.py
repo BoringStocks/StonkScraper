@@ -73,12 +73,15 @@ def get_all(ticker):
         return new_data
 
 
-@app.route('/<ticker>/historical')
-def get_historical(ticker):
+@app.route('/<ticker>/historical/all')
+def get_historical_all(ticker):
+    '''Retrieve all known historical data in 1 day increments for stock index'''
 
-    historical_data = []
-    data = requests.get(f'https://query1.finance.yahoo.com/v7/finance/download/{ticker.upper()}?period1=0&period2=2611878400&interval=1d&events=history&includeAdjustedClose=true')
+    todays_date_in_secs = (datetime.today()).timestamp()
+    data = requests.get(f'https://query1.finance.yahoo.com/v7/finance/download/{ticker.upper()}?period1=0&period2={todays_date_in_secs}&interval=1d&events=history&includeAdjustedClose=true')
     
+    historical_data = []
+
     # Check if request failed
     if not data:
         return f'Stock index not found', status.HTTP_400_BAD_REQUEST
