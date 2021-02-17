@@ -77,8 +77,8 @@ def get_all(ticker):
 def get_historical_all(ticker):
     '''Retrieve all known historical data in 1 day increments for stock index'''
 
-    todays_date_in_secs = math.ceil((datetime.today()).timestamp())
-    url = f'https://query1.finance.yahoo.com/v7/finance/download/{ticker.upper()}?period1=0&period2={todays_date_in_secs}&interval=1d&events=history&includeAdjustedClose=true'
+    period_2 = math.ceil((datetime.today()).timestamp())
+    url = f'https://query1.finance.yahoo.com/v7/finance/download/{ticker.upper()}?period1=0&period2={period_2}&interval=1d&events=history&includeAdjustedClose=true'
     
     data = retrieve_historical(url)
 
@@ -92,11 +92,10 @@ def get_historical_all(ticker):
 def get_historical_5_days(ticker):
     '''Retrieve data spanning 5 days in 1 day increments'''
 
-    todays_date_in_secs = (datetime.today()).timestamp()
-
     # Subtract 7 days of seconds to compensate for weekends
-    five_days_ago = (datetime.now() - relativedelta(days=7)).timestamp()
-    url = f'https://query1.finance.yahoo.com/v7/finance/download/{ticker.upper()}?period1={math.ceil(five_days_ago)}&period2={math.ceil(todays_date_in_secs)}&interval=1d&events=history&includeAdjustedClose=true'
+    period_1 = (datetime.now() - relativedelta(days=7)).timestamp()
+    period_2 = (datetime.today()).timestamp()
+    url = f'https://query1.finance.yahoo.com/v7/finance/download/{ticker.upper()}?period1={math.ceil(period_1)}&period2={math.ceil(period_2)}&interval=1d&events=history&includeAdjustedClose=true'
     
     data = retrieve_historical(url)
 
@@ -110,9 +109,9 @@ def get_historical_5_days(ticker):
 def get_historical_1_year(ticker):
     '''Retrieve data spanning 1 year in 1 day increments'''
 
-    todays_date_in_secs = (datetime.now()).timestamp()
-    one_year_ago = (datetime.now() - relativedelta(years=1)).timestamp()
-    url = f'https://query1.finance.yahoo.com/v7/finance/download/{ticker.upper()}?period1={math.ceil(one_year_ago)}&period2={math.ceil(todays_date_in_secs)}&interval=1d&events=history&includeAdjustedClose=true'
+    period_1 = (datetime.now() - relativedelta(years=1)).timestamp()
+    period_2 = (datetime.now()).timestamp()
+    url = f'https://query1.finance.yahoo.com/v7/finance/download/{ticker.upper()}?period1={math.ceil(period_1)}&period2={math.ceil(period_2)}&interval=1d&events=history&includeAdjustedClose=true'
     
     data = retrieve_historical(url)
 
@@ -126,9 +125,25 @@ def get_historical_1_year(ticker):
 def get_historical_6_months(ticker):
     '''Retrieve data spanning 6 months in 1 day increments'''
 
-    todays_date_in_secs = (datetime.now()).timestamp()
-    six_months_ago = (datetime.now() - relativedelta(months=6)).timestamp()
-    url = f'https://query1.finance.yahoo.com/v7/finance/download/{ticker.upper()}?period1={math.ceil(six_months_ago)}&period2={math.ceil(todays_date_in_secs)}&interval=1d&events=history&includeAdjustedClose=true'
+    period_1 = (datetime.now() - relativedelta(months=6)).timestamp()
+    period_2 = (datetime.now()).timestamp()
+    url = f'https://query1.finance.yahoo.com/v7/finance/download/{ticker.upper()}?period1={math.ceil(period_1)}&period2={math.ceil(period_2)}&interval=1d&events=history&includeAdjustedClose=true'
+    
+    data = retrieve_historical(url)
+
+    if not data:
+        return f'Stock index not found', status.HTTP_400_BAD_REQUEST
+
+    return Response(json.dumps(data), mimetype='application/json')
+
+
+@app.route('/<ticker>/historical/1_month')
+def get_historical_1_month(ticker):
+    '''Retrieve data spanning 1 months in 1 day increments'''
+
+    period_1 = (datetime.now() - relativedelta(months=1)).timestamp()
+    period_2 = (datetime.now()).timestamp()
+    url = f'https://query1.finance.yahoo.com/v7/finance/download/{ticker.upper()}?period1={math.ceil(period_1)}&period2={math.ceil(period_2)}&interval=1d&events=history&includeAdjustedClose=true'
     
     data = retrieve_historical(url)
 
