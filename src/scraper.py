@@ -62,7 +62,7 @@ class Scraper:
     def get_open(self):
         '''Parse self.parse_open for open price, return self.open'''
 
-        self.open = (self.parse_open.find('span')).string
+        self.open = float(((self.parse_open.find('span')).string).replace(',',''))
         return self.open
 
     
@@ -81,8 +81,8 @@ class Scraper:
 
         # Store points and percent in dict
         self.points_percent = {}
-        self.points_percent['points'] = points
-        self.points_percent['percent'] = percent
+        self.points_percent['points'] = float(points)
+        self.points_percent['percent'] = float(percent)
 
         return self.points_percent
 
@@ -90,7 +90,7 @@ class Scraper:
     def get_current(self):
         '''Parse self.parse_points_close (this is a list, current price is index 0) for previous close, return self.current'''
 
-        self.current = (self.parse_points_close.contents[0]).string
+        self.current = float(((self.parse_points_close.contents[0]).string).replace(',',''))
         return self.current
 
 
@@ -104,14 +104,14 @@ class Scraper:
     def get_volume(self):
         '''Parse self.parse_volume for volume, return self.volume'''
 
-        self.volume = (self.parse_volume.find('span')).string
+        self.volume = float(((self.parse_volume.find('span')).string).replace(',',''))
         return self.volume
 
     
     def get_avg_volume(self):
         '''Parse self.parse_avg_volume for average volume, return self.avg_volume'''
 
-        self.avg_volume = (self.parse_avg_volume.find('span')).string
+        self.avg_volume = float(((self.parse_avg_volume.find('span')).string).replace(',',''))
         return self.avg_volume
 
     
