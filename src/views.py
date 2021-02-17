@@ -7,14 +7,14 @@ import json
 from datetime import datetime
 
 
-@app.route('/')
+@app.route('/v1/')
 def home():
     """Displays the homepage with forms for current or historical data."""
 
     return "Nothing to see here, try /ticker"
 
 
-@app.route('/<ticker>')
+@app.route('/v1/<ticker>')
 def get_all(ticker):
     print(f'{ticker} requested at {datetime.utcnow()}')
 
@@ -72,7 +72,7 @@ def get_all(ticker):
         return new_data
 
 
-@app.route('/<ticker>/historical/<data_range>')
+@app.route('/v1/<ticker>/historical/<data_range>')
 def get_historical(ticker, data_range):
     '''Retrieve historical data spanning a given range in 1 day increments'''
 
