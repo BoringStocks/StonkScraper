@@ -112,7 +112,6 @@ class Scraper:
         '''Parse self.parse_avg_volume for average volume, return self.avg_volume'''
 
         self.avg_volume = (self.parse_avg_volume.find('span')).string
-        # self.dict['avg_volume'] = self.avg_volume
         return self.avg_volume
 
     
