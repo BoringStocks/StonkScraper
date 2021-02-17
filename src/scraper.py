@@ -49,7 +49,6 @@ class Scraper:
         self.stock_name = self.page_content.find('h1', attrs={'data-reactid': '7'}).string
         split_data = (self.stock_name).split('(')
         name = split_data[0]
-        self.dict['name'] = name
         return name
 
 
@@ -57,7 +56,6 @@ class Scraper:
         '''Return self.scrape_time'''
 
         self.scrape_time = (datetime.utcnow()).strftime("%H:%M:%S")
-        self.dict['timestamp'] = self.scrape_time
         return self.scrape_time
 
 
@@ -65,7 +63,6 @@ class Scraper:
         '''Parse self.parse_open for open price, return self.open'''
 
         self.open = (self.parse_open.find('span')).string
-        self.dict['open'] = self.open
         return self.open
 
     
@@ -87,9 +84,6 @@ class Scraper:
         self.points_percent['points'] = points
         self.points_percent['percent'] = percent
 
-        # Store dict in all_data_dict
-        self.dict['points_change'] = self.points_percent
-
         return self.points_percent
 
 
@@ -97,7 +91,6 @@ class Scraper:
         '''Parse self.parse_points_close (this is a list, current price is index 0) for previous close, return self.current'''
 
         self.current = (self.parse_points_close.contents[0]).string
-        self.dict['current'] = self.current
         return self.current
 
 
@@ -105,7 +98,6 @@ class Scraper:
         '''Parse self.parse_cap for market cap, return self.cap'''
 
         self.cap = (self.parse_cap.contents[0]).string
-        self.dict['market_cap'] = self.cap
         return self.cap
 
     
@@ -113,7 +105,6 @@ class Scraper:
         '''Parse self.parse_volume for volume, return self.volume'''
 
         self.volume = (self.parse_volume.find('span')).string
-        self.dict['volume'] = self.volume
         return self.volume
 
     
@@ -121,17 +112,7 @@ class Scraper:
         '''Parse self.parse_avg_volume for average volume, return self.avg_volume'''
 
         self.avg_volume = (self.parse_avg_volume.find('span')).string
-        self.dict['avg_volume'] = self.avg_volume
         return self.avg_volume
-
-    
-    def get_embed(self):
-        '''Create iframe for embed using input stock symbol'''
-
-        self.embed_link = f'https://public.com/stocks/{self.target}/embed'
-        self.embed_data = requests.get(self.embed_link)
-        self.embed_content = bs(self.embed_data.content, features='html5lib')
-        self.dict['embed content'] = str(self.embed_content)
 
     
     def get_range(self):
@@ -144,9 +125,9 @@ class Scraper:
         data_range = {}
         data_list = list(csv_reader)
 
-        data_range['high'] = data_list[1][2]
-        data_range['low'] = data_list[1][3]
-        data_range['close'] = data_list[1][4]
+        data_range['high'] = round(float(data_list[1][2]), 2)
+        data_range['low'] = round(float(data_list[1][3]), 2)
+        data_range['close'] = round(float(data_list[1][4]), 2)
         data_range['date'] = data_list[1][0]
         return data_range
 
@@ -166,28 +147,5 @@ class Scraper:
 
         with open('data.json', 'w') as stock_json:
             json.dump(self.dict, stock_json)
-
-        return self.dict
-
-    
-    def get_one(self, method):
-        '''Call one method'''
-
-        if method == 'name':
-            self.dict['name'] = self.get_name()
-        elif method == 'timestamp':
-            self.dict['timestamp'] = self.get_time()
-        elif method == 'current':
-            self.dict['current'] = self.get_current()
-            self.dict['points_change'] = self.get_points_change()
-            self.dict['timestamp'] = self.get_time()
-        elif method == 'open':
-            self.dict['open'] = self.get_open()
-        elif method == 'market_cap':
-            self.dict['market_cap'] = self.get_cap()
-        elif method == 'volume':
-            self.dict['volume'] = self.get_volume()
-        elif method == 'avg_vol':
-            self.dict['avg_volume'] = self.get_avg_volume()
 
         return self.dict
