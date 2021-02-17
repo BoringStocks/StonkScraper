@@ -1,6 +1,8 @@
 from src import app
-from flask import render_template, request, send_file
+from flask import request, jsonify
+from flask_api import status
 from .scraper import Scraper
+from .historical import retrieve_historical
 import json
 from datetime import datetime
 
@@ -36,8 +38,8 @@ def get_all(ticker):
             print('Returning new scrape')
             stock = Scraper(ticker)
 
-            if stock.page_content == False:
-                return 'ERROR - invalid stock index'
+            if not stock.page_content:
+                return f'{ticker} not found', status.HTTP_400_BAD_REQUEST
 
             stock.get_all()
 
@@ -57,8 +59,8 @@ def get_all(ticker):
         print('No JSON found, creating new JSON with requested index')
         stock = Scraper(ticker)
 
-        if stock.page_content == False:
-            return 'ERROR - invalid stock index'
+        if not stock.page_content:
+            return f'{ticker} not found', status.HTTP_400_BAD_REQUEST
 
         # Retrieve scrape data
         new_data = stock.get_all()
@@ -68,3 +70,26 @@ def get_all(ticker):
             json.dump(new_data, stock_json)
 
         return new_data
+
+
+@app.route('/<ticker>/historical/<data_range>')
+def get_historical(ticker, data_range):
+    '''Retrieve historical data spanning a given range in 1 day increments'''
+
+    if data_range == '5_days':
+        data = retrieve_historical(ticker, '5_days')
+    elif data_range == '1_month':
+        data = retrieve_historical(ticker, '1_month')
+    elif data_range == '6_months':
+        data = retrieve_historical(ticker, '6_months')
+    elif data_range == '1_year':
+        data = retrieve_historical(ticker, '1_year')
+    elif data_range == 'max':
+        data = retrieve_historical(ticker, 'max')
+    else:
+        return f'{data_range} invalid. Try 5_days, 1_month, 6_months, 1_year, max', status.HTTP_400_BAD_REQUEST
+
+    if not data:
+        return f'{ticker} not found', status.HTTP_400_BAD_REQUEST
+
+    return jsonify(data)
