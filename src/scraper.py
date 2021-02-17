@@ -32,6 +32,7 @@ class Scraper:
                 self.parse_cap = self.data_table.find('td', attrs={'data-test': 'MARKET_CAP-value'})
                 self.parse_volume = self.data_table.find('td', attrs={'data-test': 'TD_VOLUME-value'})
                 self.parse_avg_volume = self.data_table.find('td', attrs={'data-test': 'AVERAGE_VOLUME_3MONTH-value'})
+                self.parse_market_status = self.page_content.find('div', attrs={'id': 'quote-market-notice'})
                 print('Scrape successful\n')
 
             except:
@@ -58,6 +59,17 @@ class Scraper:
         return name
 
 
+    def get_market_status(self):
+        '''Return market status'''
+
+        raw_market_status = (self.parse_market_status.find('span')).string
+
+        if 'open' in raw_market_status:
+            return 1
+        elif 'close' in raw_market_status:
+            return 0
+
+        
     def get_time(self):
         '''Return self.scrape_time'''
 
@@ -141,16 +153,17 @@ class Scraper:
     def get_all(self):
         '''Create and call all parse methods on Scraper object'''
 
-        self.dict['symbol'] = self.get_symbol()
-        self.dict['name'] = self.get_name()
-        self.dict['timestamp'] = self.get_time()
+        self.dict['avg_volume'] = self.get_avg_volume()
         self.dict['current'] = self.get_current()
+        self.dict['market_cap'] = self.get_cap()
+        self.dict['market_status'] = self.get_market_status()
+        self.dict['name'] = self.get_name()
         self.dict['open'] = self.get_open()
         self.dict['points_change'] = self.get_points_change()
-        self.dict['market_cap'] = self.get_cap()
-        self.dict['volume'] = self.get_volume()
-        self.dict['avg_volume'] = self.get_avg_volume()
         self.dict['range'] = self.get_range()
+        self.dict['symbol'] = self.get_symbol()
+        self.dict['timestamp'] = self.get_time()
+        self.dict['volume'] = self.get_volume()
 
         with open('data.json', 'w') as stock_json:
             json.dump(self.dict, stock_json)
