@@ -32,7 +32,6 @@ class Scraper:
                 self.parse_cap = self.data_table.find('td', attrs={'data-test': 'MARKET_CAP-value'})
                 self.parse_volume = self.data_table.find('td', attrs={'data-test': 'TD_VOLUME-value'})
                 self.parse_avg_volume = self.data_table.find('td', attrs={'data-test': 'AVERAGE_VOLUME_3MONTH-value'})
-                self.dict['symbol'] = self.target
                 print('Scrape successful\n')
 
             except:
@@ -42,6 +41,12 @@ class Scraper:
         except:
             self.page_content = False
             print('Error fetching table')
+
+
+    def get_symbol(self):
+        '''Return stock symbol'''
+
+        return self.target
 
 
     def get_name(self):
@@ -136,6 +141,7 @@ class Scraper:
     def get_all(self):
         '''Create and call all parse methods on Scraper object'''
 
+        self.dict['symbol'] = self.get_symbol()
         self.dict['name'] = self.get_name()
         self.dict['timestamp'] = self.get_time()
         self.dict['current'] = self.get_current()
