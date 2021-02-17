@@ -1,5 +1,5 @@
 from src import app
-from flask import render_template, request, send_file, Response, jsonify
+from flask import render_template, request, send_file, jsonify
 from flask_api import status
 from .scraper import Scraper, retrieve_historical
 import json
