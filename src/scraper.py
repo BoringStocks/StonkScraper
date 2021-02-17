@@ -36,11 +36,11 @@ class Scraper:
 
             except:
                 self.page_content = False
-                print('ERROR SCRAPING DATA TABLE CATEGORIES - typo in parse targets?')
+                print('Error parsing table')
         
         except:
             self.page_content = False
-            print('ERROR SCRAPING DATA TABLE - invalid stock?')
+            print('Error fetching table')
 
 
     def get_name(self):

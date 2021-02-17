@@ -1,5 +1,6 @@
 from src import app
 from flask import render_template, request, send_file, Response
+from flask_api import status
 from .scraper import Scraper
 import json
 from datetime import datetime
@@ -38,8 +39,8 @@ def get_all(ticker):
             print('Returning new scrape')
             stock = Scraper(ticker)
 
-            if stock.page_content == False:
-                return 'ERROR - invalid stock index'
+            if not stock.page_content:
+                return f'Stock index not found', status.HTTP_400_BAD_REQUEST
 
             stock.get_all()
 
@@ -59,8 +60,8 @@ def get_all(ticker):
         print('No JSON found, creating new JSON with requested index')
         stock = Scraper(ticker)
 
-        if stock.page_content == False:
-            return 'ERROR - invalid stock index'
+        if not stock.page_content:
+            return f'Stock index not found', status.HTTP_400_BAD_REQUEST
 
         # Retrieve scrape data
         new_data = stock.get_all()
@@ -78,8 +79,9 @@ def get_historical(ticker):
     historical_data = []
     data = requests.get(f'https://query1.finance.yahoo.com/v7/finance/download/{ticker.upper()}?period1=0&period2=2611878400&interval=1d&events=history&includeAdjustedClose=true')
     
+    # Check if request failed
     if not data:
-        return f'ERROR'
+        return f'Stock index not found', status.HTTP_400_BAD_REQUEST
     
     decoded = data.content.decode('utf-8')
     csv_reader = csv.DictReader(decoded.splitlines(), delimiter=',')
