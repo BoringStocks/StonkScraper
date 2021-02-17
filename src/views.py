@@ -1,8 +1,10 @@
 from src import app
-from flask import render_template, request, send_file
+from flask import render_template, request, send_file, Response
 from .scraper import Scraper
 import json
 from datetime import datetime
+import requests
+import csv
 
 
 @app.route('/')
@@ -68,3 +70,24 @@ def get_all(ticker):
             json.dump(new_data, stock_json)
 
         return new_data
+
+
+@app.route('/<ticker>/historical')
+def get_historical(ticker):
+
+    historical_data = []
+    data = requests.get(f'https://query1.finance.yahoo.com/v7/finance/download/{ticker.upper()}?period1=0&period2=2611878400&interval=1d&events=history&includeAdjustedClose=true')
+    
+    if not data:
+        return f'ERROR'
+    
+    decoded = data.content.decode('utf-8')
+    csv_reader = csv.DictReader(decoded.splitlines(), delimiter=',')
+
+    for line in csv_reader:
+        single_data_point = {}
+        single_data_point['date'] = line['Date']
+        single_data_point['close'] = line['Close']
+        historical_data.append(single_data_point)
+
+    return Response(json.dumps(historical_data), mimetype='application/json')
