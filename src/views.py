@@ -26,13 +26,13 @@ def get_all(ticker):
 
         # Determine difference between old/new timestamps
         format = "%H:%M:%S"
-        old_time = old_json['data']['timestamp']
+        old_time = old_json['timestamp']
         new_time = (datetime.utcnow()).strftime(format)
         time_delta = datetime.strptime(
             new_time, format) - datetime.strptime(old_time, format)
 
         # Return new scrape if difference in stamps exceeds 5 secs or new index is requested
-        if abs(time_delta.total_seconds()) >= 5 or old_json['data']['symbol'] != ticker.upper():
+        if abs(time_delta.total_seconds()) >= 5 or old_json['symbol'] != ticker.upper():
 
             # return new current, write new data into json
             print('Returning new scrape')
@@ -46,17 +46,13 @@ def get_all(ticker):
             # Call 5_day historical
             historical = retrieve_historical(ticker, '5_days')
 
-            # Load scrape data and historical data into payload
-            payload = {
-                'data': data,
-                'historical': historical
-            }
+            data['historical'] = historical
 
             # Write payload to json
             with open('data.json', 'w') as data_json:
-                json.dump(payload, data_json)
+                json.dump(data, data_json)
 
-            return payload
+            return data
 
         else:
             # return old data if timestamp difference less than 5 secs
@@ -77,17 +73,13 @@ def get_all(ticker):
         # Call 5_day historical
         historical = retrieve_historical(ticker, '5_days')
 
-        # Load scrape data and historical data into payload
-        payload = {
-            'data': data,
-            'historical': historical
-        }
+        data['historical'] = historical
 
         # Write scrape to new json
         with open('data.json', 'w') as data_json:
-            json.dump(payload, data_json)
+            json.dump(data, data_json)
 
-        return payload
+        return data
 
 
 @app.route('/v1/<ticker>/historical/<data_range>')
