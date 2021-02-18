@@ -21,8 +21,8 @@ def get_all(ticker):
     # Detect if json exists, create new json if none found
     try:
         # Unpack old json to parse time
-        with open('data.json', 'r') as file:
-            old_json = json.load(file)
+        with open('data.json', 'r') as data_json:
+            old_json = json.load(data_json)
 
         # Determine difference between old/new timestamps
         format = "%H:%M:%S"
@@ -53,8 +53,8 @@ def get_all(ticker):
             }
 
             # Write payload to json
-            with open('data.json', 'w') as file:
-                json.dump(payload, file)
+            with open('data.json', 'w') as data_json:
+                json.dump(payload, data_json)
 
             return payload
 
@@ -84,8 +84,8 @@ def get_all(ticker):
         }
 
         # Write scrape to new json
-        with open('data.json', 'w') as stock_json:
-            json.dump(payload, stock_json)
+        with open('data.json', 'w') as data_json:
+            json.dump(payload, data_json)
 
         return payload
 
