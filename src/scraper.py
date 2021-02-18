@@ -5,6 +5,7 @@ import html5lib
 from datetime import datetime, date
 import csv
 
+
 class Scraper:
 
     def __init__(self, target):
@@ -31,27 +32,47 @@ class Scraper:
                 self.parse_cap = self.data_table.find('td', attrs={'data-test': 'MARKET_CAP-value'})
                 self.parse_volume = self.data_table.find('td', attrs={'data-test': 'TD_VOLUME-value'})
                 self.parse_avg_volume = self.data_table.find('td', attrs={'data-test': 'AVERAGE_VOLUME_3MONTH-value'})
-                self.dict['symbol'] = self.target
+                self.parse_market_status = self.page_content.find('div', attrs={'id': 'quote-market-notice'})
                 print('Scrape successful\n')
 
             except:
                 self.page_content = False
-                print('ERROR SCRAPING DATA TABLE CATEGORIES - typo in parse targets?')
+                print('Error parsing table')
         
         except:
             self.page_content = False
-            print('ERROR SCRAPING DATA TABLE - invalid stock?')
+            print('Error fetching table')
+
+
+    def get_symbol(self):
+        '''Return stock symbol'''
+
+        return self.target
 
 
     def get_name(self):
         '''Parse self.page_content for stock name, return self.stock_name'''
 
         self.stock_name = self.page_content.find('h1', attrs={'data-reactid': '7'}).string
-        split_data = (self.stock_name).split('(')
+        split_data = (self.stock_name).split(' (')
         name = split_data[0]
         return name
 
 
+    def get_market_status(self):
+        '''Return market status:
+            1: Open
+            0: Closed
+        '''
+
+        raw_market_status = (self.parse_market_status.find('span')).string
+
+        if 'open' in raw_market_status:
+            return 1
+        elif 'close' in raw_market_status:
+            return 0
+
+        
     def get_time(self):
         '''Return self.scrape_time'''
 
@@ -62,7 +83,7 @@ class Scraper:
     def get_open(self):
         '''Parse self.parse_open for open price, return self.open'''
 
-        self.open = (self.parse_open.find('span')).string
+        self.open = float(((self.parse_open.find('span')).string).replace(',',''))
         return self.open
 
     
@@ -81,8 +102,8 @@ class Scraper:
 
         # Store points and percent in dict
         self.points_percent = {}
-        self.points_percent['points'] = points
-        self.points_percent['percent'] = percent
+        self.points_percent['points'] = float(points)
+        self.points_percent['percent'] = float(percent)
 
         return self.points_percent
 
@@ -90,7 +111,7 @@ class Scraper:
     def get_current(self):
         '''Parse self.parse_points_close (this is a list, current price is index 0) for previous close, return self.current'''
 
-        self.current = (self.parse_points_close.contents[0]).string
+        self.current = float(((self.parse_points_close.contents[0]).string).replace(',',''))
         return self.current
 
 
@@ -104,14 +125,14 @@ class Scraper:
     def get_volume(self):
         '''Parse self.parse_volume for volume, return self.volume'''
 
-        self.volume = (self.parse_volume.find('span')).string
+        self.volume = float(((self.parse_volume.find('span')).string).replace(',',''))
         return self.volume
 
     
     def get_avg_volume(self):
         '''Parse self.parse_avg_volume for average volume, return self.avg_volume'''
 
-        self.avg_volume = (self.parse_avg_volume.find('span')).string
+        self.avg_volume = float(((self.parse_avg_volume.find('span')).string).replace(',',''))
         return self.avg_volume
 
     
@@ -135,15 +156,17 @@ class Scraper:
     def get_all(self):
         '''Create and call all parse methods on Scraper object'''
 
-        self.dict['name'] = self.get_name()
-        self.dict['timestamp'] = self.get_time()
+        self.dict['avg_volume'] = self.get_avg_volume()
         self.dict['current'] = self.get_current()
+        self.dict['market_cap'] = self.get_cap()
+        self.dict['market_status'] = self.get_market_status()
+        self.dict['name'] = self.get_name()
         self.dict['open'] = self.get_open()
         self.dict['points_change'] = self.get_points_change()
-        self.dict['market_cap'] = self.get_cap()
-        self.dict['volume'] = self.get_volume()
-        self.dict['avg_volume'] = self.get_avg_volume()
         self.dict['range'] = self.get_range()
+        self.dict['symbol'] = self.get_symbol()
+        self.dict['timestamp'] = self.get_time()
+        self.dict['volume'] = self.get_volume()
 
         with open('data.json', 'w') as stock_json:
             json.dump(self.dict, stock_json)
