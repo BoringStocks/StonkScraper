@@ -6,7 +6,6 @@ from .historical import retrieve_historical
 import json
 from datetime import datetime
 import traceback
-import pprint
 
 
 @app.route('/v1/')
