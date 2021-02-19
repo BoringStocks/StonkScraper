@@ -22,6 +22,7 @@ def retrieve_historical(ticker, data_range):
         f'https://query1.finance.yahoo.com/v7/finance/download/{ticker.upper()}?period1={math.ceil(period_1)}&period2={math.ceil(period_2)}&interval=1d&events=history&includeAdjustedClose=true')
     
     historical_data = []
+    historical_dict = {}
 
     # Check if request failed
     if not data:
@@ -36,4 +37,5 @@ def retrieve_historical(ticker, data_range):
         single_data_point['close'] = round(float(line['Close']), 2)
         historical_data.append(single_data_point)
 
-    return historical_data
+    historical_dict['historical'] = historical_data
+    return historical_dict
