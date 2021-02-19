@@ -50,8 +50,13 @@ def get_all(ticker):
             data['historical'] = historical
 
             # Write payload to json
-            new_unpacked_json = open('data.json')
-            data = json.load(new_unpacked_json)
+            with open('data.json', 'w') as new_unpacked_json:
+                json.dump(data, new_unpacked_json)
+
+            # Print json to console for logging
+            with open('data.json') as read_only:
+                json_data = json.load(read_only)
+            print(json.dumps(json_data, indent=1))
 
             return data
 
