@@ -94,6 +94,8 @@ def get_all(ticker):
 def get_historical(ticker, data_range):
     '''Retrieve historical data spanning a given range in 1 day increments'''
 
+    historical_data = {}
+
     if data_range == '5_days':
         data = retrieve_historical(ticker, '5_days')
     elif data_range == '1_month':
@@ -110,4 +112,6 @@ def get_historical(ticker, data_range):
     if not data:
         return f'{ticker} not found', status.HTTP_400_BAD_REQUEST
 
-    return jsonify(data)
+    historical_data['historical'] = data
+
+    return historical_data
