@@ -8,7 +8,7 @@
 Primary endpoint: `http://api.boringstocks.live/`
 
 ### Current Index Data
-Request `http://api.boringstocks.live/v1/<stock_index>`<br>
+Request `https://api.boringstocks.live/v1/<stock_index>`<br>
 `StonkScraper` returns a JSON containing these data points:
   - Current price
   - Range of historical data (not including the current day)
@@ -24,7 +24,7 @@ Request `http://api.boringstocks.live/v1/<stock_index>`<br>
 
 ### Historical Index Data
 `StonkScraper` can also return the historical data ending on the current date.<br>
-Request `http://api.boringstocks.live/v1/<stock_index>/historical/<data_range>`
+Request `https://api.boringstocks.live/v1/<stock_index>/historical/<data_range>`
 Desired Range | <data_range>
 ------------- | ------------
 5 days | 5_days
@@ -34,7 +34,7 @@ Desired Range | <data_range>
 All historical data | max
 
 ## Examples
-Requesting `http://api.boringstocks.live/v1/GOOG`:
+Requesting `https://api.boringstocks.live/v1/GOOG`:
 ```javascript
 {
   "avg_volume": 1571006.0, 
@@ -76,7 +76,7 @@ Requesting `http://api.boringstocks.live/v1/GOOG`:
   "volume": 1121855.0
 }
 ```
-<br>Requesting `http://api.boringstocks.live/v1/GOOG/historical/5_days`:
+<br>Requesting `https://api.boringstocks.live/v1/GOOG/historical/5_days`:
 ```python
 [
   {
@@ -98,23 +98,5 @@ Requesting `http://api.boringstocks.live/v1/GOOG`:
 ]
 ```
 
-## [License](https://github.com/BoringStocks/StonkScraper/blob/dev/LICENSE)
-Copyright © 2021 BoringStocks
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+## License
+`StonkScraper` is available under the MIT license. See the [LICENSE](https://github.com/BoringStocks/StonkScraper/blob/dev/LICENSE) file for more info.
