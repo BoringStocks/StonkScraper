@@ -21,18 +21,18 @@ def get_all(ticker):
     # Detect if json exists, create new json if none found
     try:
         # Unpack old json to parse time
-        unpacked_json = open('data.json')
-        data = json.load(unpacked_json)
+        with open('data.json', 'r') as data_json:
+            old_json = json.load(data_json)
 
         # Determine difference between old/new timestamps
         format = "%H:%M:%S"
-        old_time = data['timestamp']
+        old_time = old_json['timestamp']
         new_time = (datetime.utcnow()).strftime(format)
         time_delta = datetime.strptime(
             new_time, format) - datetime.strptime(old_time, format)
 
         # Return new scrape if difference in stamps exceeds 5 secs or new index is requested
-        if abs(time_delta.total_seconds()) >= 5 or data['symbol'] != ticker.upper():
+        if abs(time_delta.total_seconds()) >= 5 or old_json['symbol'] != ticker.upper():
 
             # return new current, write new data into json
             print('Returning new scrape')
@@ -41,18 +41,23 @@ def get_all(ticker):
             if not stock.page_content:
                 return f'{ticker} not found', status.HTTP_400_BAD_REQUEST
 
-            stock.get_all()
+            data = stock.get_all()
 
-            # Write new scrape to json
-            new_unpacked_json = open('data.json')
-            new_data = json.load(new_unpacked_json)
+            # Call 5_day historical
+            historical = retrieve_historical(ticker, '5_days')
 
-            return new_data
+            data['historical'] = historical
+
+            # Write payload to json
+            with open('data.json', 'w') as data_json:
+                json.dump(data, data_json)
+
+            return data
 
         else:
             # return old data if timestamp difference less than 5 secs
             print('Returning old scrape')
-            return data
+            return old_json
 
     except:
         # Run if no JSON found
@@ -63,13 +68,18 @@ def get_all(ticker):
             return f'{ticker} not found', status.HTTP_400_BAD_REQUEST
 
         # Retrieve scrape data
-        new_data = stock.get_all()
+        data = stock.get_all()
+
+        # Call 5_day historical
+        historical = retrieve_historical(ticker, '5_days')
+
+        data['historical'] = historical
 
         # Write scrape to new json
-        with open('data.json', 'w') as stock_json:
-            json.dump(new_data, stock_json)
+        with open('data.json', 'w') as data_json:
+            json.dump(data, data_json)
 
-        return new_data
+        return data
 
 
 @app.route('/v1/<ticker>/historical/<data_range>')
