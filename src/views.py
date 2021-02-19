@@ -5,6 +5,7 @@ from .scraper import Scraper
 from .historical import retrieve_historical
 import json
 from datetime import datetime
+import traceback
 
 
 @app.route('/v1/')
@@ -49,8 +50,8 @@ def get_all(ticker):
             data['historical'] = historical
 
             # Write payload to json
-            with open('data.json', 'w') as data_json:
-                json.dump(data, data_json)
+            new_unpacked_json = open('data.json')
+            data = json.load(new_unpacked_json)
 
             return data
 
@@ -59,7 +60,9 @@ def get_all(ticker):
             print('Returning old scrape')
             return old_json
 
-    except:
+    except Exception as error:
+        traceback.print_exc()
+        
         # Run if no JSON found
         print('No JSON found, creating new JSON with requested index')
         stock = Scraper(ticker)
