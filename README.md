@@ -78,24 +78,26 @@ Requesting `https://api.boringstocks.live/v1/GOOG`:
 ```
 <br>Requesting `https://api.boringstocks.live/v1/GOOG/historical/5_days`:
 ```python
-[
-  {
-    "close": 2104.11, 
-    "date": "2021-02-12"
-  }, 
-  {
-    "close": 2121.9, 
-    "date": "2021-02-16"
-  }, 
-  {
-    "close": 2128.31, 
-    "date": "2021-02-17"
-  }, 
-  {
-    "close": 2117.2, 
-    "date": "2021-02-18"
-  }
-]
+{ "historical": 
+  [
+    {
+      "close": 2104.11, 
+      "date": "2021-02-12"
+    }, 
+    {
+      "close": 2121.9, 
+      "date": "2021-02-16"
+    }, 
+    {
+      "close": 2128.31, 
+      "date": "2021-02-17"
+    }, 
+    {
+      "close": 2117.2, 
+      "date": "2021-02-18"
+    }
+  ]
+}
 ```
 
 ## License
