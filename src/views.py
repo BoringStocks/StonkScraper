@@ -45,9 +45,9 @@ def get_all(ticker):
             data = stock.get_all()
 
             # Call 5_day historical
-            historical = retrieve_historical(ticker, '5_days')
+            # historical = retrieve_historical(ticker, '5_days')
 
-            data['historical'] = historical
+            # data['historical'] = historical
 
             # Write payload to json
             with open('data.json', 'w') as new_unpacked_json:
@@ -115,3 +115,16 @@ def get_historical(ticker, data_range):
     historical_data['historical'] = data
 
     return historical_data
+
+
+@app.route('/v1/<ticker>/current')
+def get_current(ticker):
+
+    data = {}
+    
+    stock = Scraper(ticker)
+    data['current'] = stock.get_current()
+    data['points_change'] = stock.get_points_change()
+    data['market_status'] = stock.get_market_status()
+
+    return data
