@@ -45,9 +45,9 @@ def get_all(ticker):
             data = stock.get_all()
 
             # Call 5_day historical
-            historical = retrieve_historical(ticker, '5_days')
+            # historical = retrieve_historical(ticker, '5_days')
 
-            data['historical'] = historical
+            # data['historical'] = historical
 
             # Write payload to json
             with open('data.json', 'w') as new_unpacked_json:
