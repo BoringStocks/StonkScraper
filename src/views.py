@@ -115,3 +115,16 @@ def get_historical(ticker, data_range):
     historical_data['historical'] = data
 
     return historical_data
+
+
+@app.route('/v1/<ticker>/current')
+def get_current(ticker):
+
+    data = {}
+    
+    stock = Scraper(ticker)
+    data['current'] = stock.get_current()
+    data['points_change'] = stock.get_points_change()
+    data['market_status'] = stock.get_market_status()
+
+    return data
