@@ -18,9 +18,13 @@ def retrieve_historical(ticker, data_range):
         period_1 = 0
     
     period_2 = (datetime.now()).timestamp()
-    data = requests.get(
-        f'https://query1.finance.yahoo.com/v7/finance/download/{ticker.upper()}?period1={math.ceil(period_1)}&period2={math.ceil(period_2)}&interval=1d&events=history&includeAdjustedClose=true')
+    print('----------Requesting historical data-----------')
+    url = f'https://query1.finance.yahoo.com/v7/finance/download/{ticker.upper()}?period1={math.ceil(period_1)}&period2={math.ceil(period_2)}&interval=1d&events=history&includeAdjustedClose=true'
+    print(f'Querying: {url}')
     
+    data = requests.get(url)
+    
+    print(f'Server responded: Status Code {data.status_code}')
     historical_data = []
 
     # Check if request failed
@@ -33,7 +37,12 @@ def retrieve_historical(ticker, data_range):
     for line in csv_reader:
         single_data_point = {}
         single_data_point['date'] = line['Date']
-        single_data_point['close'] = round(float(line['Close']), 2)
-        historical_data.append(single_data_point)
+
+        if line['Close'] != 'null':
+            single_data_point['close'] = round(float(line['Close']), 2)
+            historical_data.append(single_data_point)
+        else:
+            print('Null value encountered, skipping')
+    print('----------Historical data parse complete-----------\n')
 
     return historical_data

@@ -54,9 +54,9 @@ def get_all(ticker):
                 json.dump(data, new_unpacked_json)
 
             # Print json to console for logging
-            with open('data.json') as read_only:
-                json_data = json.load(read_only)
-            print(json.dumps(json_data, indent=1))
+            # with open('data.json') as read_only:
+            #     json_data = json.load(read_only)
+            # print(json.dumps(json_data, indent=1))
 
             return data
 
