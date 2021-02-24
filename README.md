@@ -102,3 +102,6 @@ Requesting `https://api.boringstocks.live/v1/GOOG`:
 
 ## License
 `StonkScraper` is available under the MIT license. See the [LICENSE](https://github.com/BoringStocks/StonkScraper/blob/dev/LICENSE) file for more info.
+
+# Disclaimer
+`StonkScraper` uses Yahoo Finance to aggregate its data. No copyright infringement is intended.
