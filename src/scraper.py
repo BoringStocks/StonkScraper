@@ -138,27 +138,22 @@ class Scraper:
     
     def get_range(self):
         '''Return high, low, close of index'''
-        print('----Requesting range data----')
+        print('----Requesting range data----\n')
         file = requests.get(f"https://query1.finance.yahoo.com/v7/finance/download/{self.target}")
+        print(f'Server responded: Status Code {file.status_code}')
         decoded = file.content.decode('utf-8')
         csv_reader = csv.reader(decoded.splitlines(), delimiter=',')
 
         data_range = {}
         data_list = list(csv_reader)
-        print('Printing csv contents')
+        print('CSV contents:')
         print(data_list)
-        print()
-        print(f'Parsing for high...')
         data_range['high'] = round(float(data_list[1][2]), 2)
-        print(f'Parsing for low...')
         data_range['low'] = round(float(data_list[1][3]), 2)
-        print(f'Parsing for close...')
         data_range['close'] = round(float(data_list[1][4]), 2)
-        print(f'Parsing for date...\n')
         data_range['date'] = data_list[1][0]
+        print(f'Data: {data_range}\n')
         print('----Range parse complete----')
-        print(f'Data: {data_range}')
-        print()
         return data_range
 
 
