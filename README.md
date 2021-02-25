@@ -1,4 +1,5 @@
 # __StonkScraper__
+This API is a WIP. Check back often for new features!<br>
 [See a live implementation here!](https://boringstocks.live/)
 
 `StonkScraper` is a lightweight API that scrapes Yahoo's financial pages for a defined stock index. It is minimal by design but returns most of the data that the average daytrader would require to decide whether to buy or sell GME.
@@ -100,8 +101,8 @@ Requesting `https://api.boringstocks.live/v1/GOOG`:
 }
 ```
 
-## License
+### License
 `StonkScraper` is available under the MIT license. See the [LICENSE](https://github.com/BoringStocks/StonkScraper/blob/dev/LICENSE) file for more info.
 
-# Disclaimer
-`StonkScraper` uses Yahoo Finance to aggregate its data. No copyright infringement is intended.
+### Disclaimer
+`StonkScraper` uses Yahoo Finance to aggregate its data. No copyright infringement intended.
