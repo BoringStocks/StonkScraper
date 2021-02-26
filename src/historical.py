@@ -54,10 +54,8 @@ def normalize_data(data, data_range):
     print(f'Requested data points: {data_range}')
 
     increment = data_points_count // data_range
-    remainder = data_points_count % data_range
 
     print(f'Increment size: {increment}')
-    print(f'Remainder: {remainder}')
 
     normalized_data = []
     i = 0
