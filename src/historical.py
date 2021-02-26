@@ -46,3 +46,30 @@ def retrieve_historical(ticker, data_range):
     print('----------Historical data parse complete-----------\n')
 
     return historical_data
+
+def normalize_data(data, data_range):
+
+    data_points_count = len(data)
+    print(f'Stored data points count: {data_points_count}')
+    print(f'Requested data points: {data_range}')
+
+    increment = data_points_count // data_range
+    remainder = data_points_count % data_range
+
+    print(f'Increment size: {increment}')
+    print(f'Remainder: {remainder}')
+    print(f'Testing parsing day 1: {data[0]}')
+
+    new_data = []
+
+    for i in range(data_range):
+        total_close = 0
+        dates = f'{data[i]} - '
+
+        for j in range(increment):
+            total_close += data[j]['close']
+        
+        mean = total_close / increment
+        i += increment
+        dates += f'{data[i]}'
+        print(f'Dates: {dates}  -->  Mean: {round(mean, 2)}')

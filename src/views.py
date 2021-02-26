@@ -2,7 +2,7 @@ from src import app
 from flask import request, jsonify
 from flask_api import status
 from .scraper import Scraper
-from .historical import retrieve_historical
+from .historical import retrieve_historical, normalize_data
 import json
 from datetime import datetime
 import traceback
@@ -128,3 +128,12 @@ def get_current(ticker):
     data['market_status'] = stock.get_market_status()
 
     return data
+    
+
+@app.route('/v1/<ticker>/historical/1_year/normalize')
+def normalize_max(ticker):
+
+    data = retrieve_historical(ticker, '1_year')
+    normalize_data(data, 10)
+
+    return 'check console'
