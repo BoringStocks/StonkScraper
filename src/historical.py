@@ -58,18 +58,25 @@ def normalize_data(data, data_range):
 
     print(f'Increment size: {increment}')
     print(f'Remainder: {remainder}')
-    print(f'Testing parsing day 1: {data[0]}')
 
-    new_data = []
-
-    for i in range(data_range):
-        total_close = 0
-        dates = f'{data[i]} - '
-
-        for j in range(increment):
-            total_close += data[j]['close']
-        
-        mean = total_close / increment
+    normalized_data = []
+    i = 0
+    k = 0
+    while i < data_points_count-increment:
+        date1 = data[i]['date']
         i += increment
-        dates += f'{data[i]}'
-        print(f'Dates: {dates}  -->  Mean: {round(mean, 2)}')
+
+        close_totals = 0
+        for j in range(increment):
+            close_totals += data[k]['close']
+            k += 1
+
+        date2 = data[k-1]['date']
+        mean = round(close_totals / increment, 2)
+
+        data_point = {}
+        data_point['date'] = f'{date1} -> {date2}'
+        data_point['close'] = mean
+        normalized_data.append(data_point)
+
+    return normalized_data

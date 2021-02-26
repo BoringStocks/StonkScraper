@@ -130,10 +130,13 @@ def get_current(ticker):
     return data
     
 
-@app.route('/v1/<ticker>/historical/1_year/normalize')
+@app.route('/v1/<ticker>/historical/max/normalize')
 def normalize_max(ticker):
 
-    data = retrieve_historical(ticker, '1_year')
-    normalize_data(data, 10)
+    payload = {}
 
-    return 'check console'
+    raw_data = retrieve_historical(ticker, 'max')
+    normalized_data = normalize_data(raw_data, 365)
+    payload['historical'] = normalized_data
+
+    return payload
