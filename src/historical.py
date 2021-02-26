@@ -53,14 +53,16 @@ def normalize_data(data, data_range):
     print(f'Stored data points count: {data_points_count}')
     print(f'Requested data points: {data_range}')
 
-    increment = data_points_count // data_range
+    increment = math.ceil(data_points_count / data_range)
+    remainder = data_points_count % increment
 
     print(f'Increment size: {increment}')
+    print(f'Remainder: {remainder}')
 
     normalized_data = []
     i = 0
     k = 0
-    while i < data_points_count-increment:
+    while i < data_points_count - remainder:
         date1 = data[i]['date']
         i += increment
 
@@ -73,8 +75,22 @@ def normalize_data(data, data_range):
         mean = round(close_totals / increment, 2)
 
         data_point = {}
-        data_point['date'] = f'{date1} -> {date2}'
+        data_point['date'] = date2
         data_point['close'] = mean
         normalized_data.append(data_point)
+    
+    close_totals = 0
+    for j in range(remainder):
+        close_totals += data[k]['close']
+        k += 1
 
+    date2 = data[k-1]['date']
+    mean = round(close_totals / remainder, 2)
+
+    data_point = {}
+    data_point['date'] = date2
+    data_point['close'] = mean
+    normalized_data.append(data_point)
+
+    print(len(normalized_data))
     return normalized_data

@@ -110,7 +110,7 @@ def get_historical(ticker, data_range):
         return f'{data_range} invalid. Try 5_days, 1_month, 6_months, 1_year, max', status.HTTP_400_BAD_REQUEST
 
     if not data:
-        return f'{ticker} not found', status.HTTP_400_BAD_REQUEST
+        return f'{ticker} not found or no data returned', status.HTTP_400_BAD_REQUEST
 
     historical_data['historical'] = data
 
