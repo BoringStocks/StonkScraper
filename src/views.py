@@ -54,9 +54,9 @@ def get_all(ticker):
                 json.dump(data, new_unpacked_json)
 
             # Print json to console for logging
-            with open('data.json') as read_only:
-                json_data = json.load(read_only)
-            print(json.dumps(json_data, indent=1))
+            # with open('data.json') as read_only:
+            #     json_data = json.load(read_only)
+            # print(json.dumps(json_data, indent=1))
 
             return data
 
@@ -115,3 +115,16 @@ def get_historical(ticker, data_range):
     historical_data['historical'] = data
 
     return historical_data
+
+
+@app.route('/v1/<ticker>/current')
+def get_current(ticker):
+
+    data = {}
+    
+    stock = Scraper(ticker)
+    data['current'] = stock.get_current()
+    data['points_change'] = stock.get_points_change()
+    data['market_status'] = stock.get_market_status()
+
+    return data
