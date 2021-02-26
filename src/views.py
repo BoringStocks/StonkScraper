@@ -126,5 +126,6 @@ def get_current(ticker):
     data['current'] = stock.get_current()
     data['points_change'] = stock.get_points_change()
     data['market_status'] = stock.get_market_status()
+    data['symbol'] = stock.get_symbol()
 
     return data
