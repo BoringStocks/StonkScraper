@@ -11,17 +11,20 @@ Primary endpoint: `http://api.boringstocks.live/`
 ### Current Index Data
 Request `https://api.boringstocks.live/v1/<stock_index>`<br>
 `StonkScraper` returns a JSON containing these data points:
-  - Current price
-  - Range of historical data (not including the current day)
-  - Market cap
-  - Market status (open/close)
-  - Opening price
-  - Price change (points & percent)
-  - Day's range (date, high, low, & close)
-  - Index
-  - Timestamp
-  - Average volume
-  - Volume
+
+key           |  type  | description
+------------- | ------ | -------------------
+index         | string | Stock symbol
+name          | string | Company name
+current       |  float | Current stock price
+points_change |  dict  | Points and percent +/-
+market_cap    |  float | Market cap
+range         |  dict  | High, low, close, date
+open          | string | Opening price
+market_status |  enum  | open: 1, closed: 0
+volume        | float  | Volume
+avg_volume    | float  | Average volume
+timestamp     | string | Request time
 
 ### Historical Index Data
 `StonkScraper` can also return the historical data ending on the current date.<br>
@@ -105,4 +108,4 @@ Requesting `https://api.boringstocks.live/v1/GOOG`:
 `StonkScraper` is available under the MIT license. See the [LICENSE](https://github.com/BoringStocks/StonkScraper/blob/dev/LICENSE) file for more info.
 
 ### Disclaimer
-`StonkScraper` uses Yahoo Finance to aggregate its data. No copyright infringement intended.
+`StonkScraper` uses Yahoo Finance to aggregate data. No copyright infringement intended.
