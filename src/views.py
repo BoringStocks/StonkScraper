@@ -6,6 +6,7 @@ from .historical import retrieve_historical
 import json
 from datetime import datetime
 import traceback
+from .robinhood import Robinhood
 
 
 @app.route('/v1/')
@@ -67,7 +68,7 @@ def get_all(ticker):
 
     except Exception as error:
         traceback.print_exc()
-        
+
         # Run if no JSON found
         print('No JSON found, creating new JSON with requested index')
         stock = Scraper(ticker)
@@ -121,7 +122,7 @@ def get_historical(ticker, data_range):
 def get_current(ticker):
 
     data = {}
-    
+
     stock = Scraper(ticker)
     data['current'] = stock.get_current()
     data['points_change'] = stock.get_points_change()
@@ -129,3 +130,20 @@ def get_current(ticker):
     data['symbol'] = stock.get_symbol()
 
     return data
+
+
+# https://github.com/jmfernandes/robin_stocks
+# http://www.robin-stocks.com/en/latest/robinhood.html#getting-stock-information
+
+
+@app.route('/v2/<ticker>/historical/<data_range>')
+def get_ticker_rh(ticker, data_range):
+
+    # if not data:
+    #     return f'{ticker} not found', status.HTTP_400_BAD_REQUEST
+
+    historical_data = {}
+    historical_data['historical'] = Robinhood.get_historical(
+        ticker, data_range)
+
+    return historical_data
