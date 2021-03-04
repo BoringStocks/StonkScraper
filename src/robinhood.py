@@ -1,3 +1,5 @@
+import os
+from src import historical
 import robin_stocks.robinhood as r
 
 
@@ -6,7 +8,9 @@ class Robinhood:
 
     @staticmethod
     def __login():
-        r.login()
+        email = os.getenv("RH_EMAIL")
+        password = os.getenv("RH_PASSWORD")
+        r.login(email, password)
 
     @classmethod
     def get_historical(cls, ticker, data_range):
@@ -33,19 +37,27 @@ class Robinhood:
             ticker, interval=interval, span=span)
 
         # TODO: check for None
-        historical_data = []
+        historical = []
         for day in response:
-            historical_data.append({
+            historical.append({
                 "date": day["begins_at"],
                 "close": day["close_price"]
             })
 
-        return historical_data
+        return {"historical": historical}
 
         # There's 2 types of errors
         # 401 Client Error: Unauthorized for url: https://api.robinhood.com/quotes/historicals/?symbols=GME&interval=hour&span=week&bounds=regular
         # 404 Client Error: Not Found for url: https://api.robinhood.com/quotes/historicals/?symbols=ERDFTCHGVJB&interval=hour&span=week&bounds=regular
 
+    @classmethod
+    def get_ticker(cls, ticker):
+        if not cls.isAuthentificated:
+            Robinhood.__login()
+
+        fundamentals = r.get_fundamentals(ticker)
+
+        return fundamentals
 
 # print(ticker)
 # name = r.stocks.get_name_by_symbol(ticker)
