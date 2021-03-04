@@ -56,15 +56,31 @@ class Robinhood:
             Robinhood.__login()
 
         fundamentals = r.get_fundamentals(ticker)
+        # TODO: error handling -> empty array
 
-        return fundamentals
+        ticker_data = {}
+        ticker_data["current"] = 0
 
-# print(ticker)
-# name = r.stocks.get_name_by_symbol(ticker)
-# fundamentals = r.stocks.get_fundamentals(ticker)
+        ticker_data["volume"] = fundamentals[0]["volume"]
+        ticker_data["avg_volume"] = fundamentals[0]["average_volume"]
 
-# data = {}
-# data["ticker"] = ticker
-# data["name"] = name
-# data["fundamentals"] = fundamentals
-# return data
+        ticker_data["market_cap"] = fundamentals[0]["market_cap"]
+        ticker_data["market_status"] = 0
+
+        # name = r.stocks.get_name_by_symbol(ticker)
+        ticker_data["name"] = "no name"
+
+        # no points change
+
+        ticker_data["range"] = {
+            # need to talk about this, also no close
+            "open": fundamentals[0]["open"],
+            "high": fundamentals[0]["high"],
+            "low": fundamentals[0]["low"],
+            "date": fundamentals[0]["market_date"]
+        }
+
+        ticker_data["symbol"] = fundamentals[0]["symbol"]
+        ticker_data["timestamp"] = "1:1:1"
+
+        return ticker_data
