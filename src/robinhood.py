@@ -1,5 +1,5 @@
 import os
-from datetime import datetime, date
+from datetime import datetime, date, time
 import json
 import robin_stocks.robinhood as r
 
@@ -74,11 +74,19 @@ class Robinhood:
 
         ticker_data = {}
         price_change = {}
+        now = (datetime.utcnow()).time()
+
         ticker_data["current"] = round(float(r.stocks.get_latest_price(ticker)[0]),2)
         ticker_data["volume"] = round(float(fundamentals[0]["volume"]),2)
         ticker_data["avg_volume"] = round(float(fundamentals[0]["average_volume"]), 2)
         ticker_data["market_cap"] = round(float(fundamentals[0]["market_cap"]), 2)
-        ticker_data["market_status"] = 0
+
+        # Check if market is open/closed
+        if now >= time(14, 30, 0) and now <= time(21, 0, 0):
+            ticker_data["market_status"] = 1
+        else:
+            ticker_data["market_status"] = 0
+
         ticker_data["name"] = r.stocks.find_instrument_data(ticker)[0]['simple_name']
         ticker_data["range"] = {
             "open": round(float(fundamentals[0]["open"]),2),
