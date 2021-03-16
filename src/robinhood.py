@@ -1,5 +1,6 @@
 import os
-from src import historical
+from datetime import datetime, date
+import json
 import robin_stocks.robinhood as r
 
 
@@ -35,8 +36,11 @@ class Robinhood:
 
         response = r.stocks.get_stock_historicals(
             ticker, interval=interval, span=span)
+        
+        # Check if data doesn't exist
+        if response[0] == None:
+            return False
 
-        # TODO: check for None
         historical = []
         for day in response:
             historical.append({
@@ -56,31 +60,29 @@ class Robinhood:
             Robinhood.__login()
 
         fundamentals = r.get_fundamentals(ticker)
-        # TODO: error handling -> empty array
+        if fundamentals[0] == None:
+            return False
 
         ticker_data = {}
-        ticker_data["current"] = 0
-
-        ticker_data["volume"] = fundamentals[0]["volume"]
-        ticker_data["avg_volume"] = fundamentals[0]["average_volume"]
-
-        ticker_data["market_cap"] = fundamentals[0]["market_cap"]
+        ticker_data["current"] = round(float(r.stocks.get_latest_price(ticker)[0]),2)
+        ticker_data["volume"] = round(float(fundamentals[0]["volume"]),2)
+        ticker_data["avg_volume"] = round(float(fundamentals[0]["average_volume"]), 2)
+        ticker_data["market_cap"] = round(float(fundamentals[0]["market_cap"]), 2)
         ticker_data["market_status"] = 0
-
-        # name = r.stocks.get_name_by_symbol(ticker)
-        ticker_data["name"] = "no name"
-
-        # no points change
-
+        ticker_data["name"] = r.stocks.find_instrument_data(ticker)[0]['simple_name']
+        ticker_data['points_change'] = 0
         ticker_data["range"] = {
             # need to talk about this, also no close
-            "open": fundamentals[0]["open"],
-            "high": fundamentals[0]["high"],
-            "low": fundamentals[0]["low"],
+            "open": round(float(fundamentals[0]["open"]),2),
+            "high": round(float(fundamentals[0]["high"]),2),
+            "low": round(float(fundamentals[0]["low"]),2),
             "date": fundamentals[0]["market_date"]
         }
 
         ticker_data["symbol"] = fundamentals[0]["symbol"]
-        ticker_data["timestamp"] = "1:1:1"
+        ticker_data["timestamp"] = (datetime.utcnow()).strftime("%H:%M:%S")
+
+        with open('data.json', 'w') as stock_json:
+            json.dump(ticker_data, stock_json)
 
         return ticker_data
