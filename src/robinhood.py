@@ -66,8 +66,14 @@ class Robinhood:
 
     @classmethod
     def get_ticker(cls, ticker):
-        if not cls.isAuthentificated:
-            Robinhood.__login()
+        format = "%H:%M:%S"
+        current_time = (datetime.utcnow()).strftime("%H:%M:%S")
+
+        time_delta = abs(datetime.strptime(cls.login_time, format) - datetime.strptime(current_time, format))
+
+        # Relogin after 22 hours
+        if time_delta.total_seconds() >= 79200:
+            Robinhood.login()
 
         fundamentals = r.get_fundamentals(ticker)
         if fundamentals[0] == None:
