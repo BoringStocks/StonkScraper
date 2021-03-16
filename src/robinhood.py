@@ -14,10 +14,9 @@ class Robinhood:
         password = os.getenv("RH_PASSWORD")
         r.login(email, password)
         cls.login_time = (datetime.utcnow()).strftime("%H:%M:%S")
-        
 
     @classmethod
-    def get_historical(cls, ticker, data_range):
+    def check_login_time(cls):
         format = "%H:%M:%S"
         current_time = (datetime.utcnow()).strftime("%H:%M:%S")
 
@@ -27,9 +26,12 @@ class Robinhood:
         if time_delta.total_seconds() >= 79200:
             Robinhood.login()
 
+    @classmethod
+    def get_historical(cls, ticker, data_range):
+        cls.check_login_time()
+
         interval = ""
         span = ""
-
 
         if data_range == '1_day':
             span = "day"
@@ -66,8 +68,7 @@ class Robinhood:
 
     @classmethod
     def get_ticker(cls, ticker):
-        if not cls.isAuthentificated:
-            Robinhood.__login()
+        cls.check_login_time()
 
         fundamentals = r.get_fundamentals(ticker)
         if fundamentals[0] == None:
