@@ -18,15 +18,25 @@ class Robinhood:
         if not cls.isAuthentificated:
             Robinhood.__login()
 
-        interval = "hour"
+        interval = ""
         span = ""
 
-        if data_range == '5_days':
+# 1 day, 5 days, 3 month, 1 year, 5 years
+# 1 day, interval 5minute
+# 5 days, interval 1 hour
+# 3 month, interval day
+# 1 year, interval day
+# 5 year, interval week
+
+        if data_range == '1_day':
+            span = "day"
+            interval = "5minute"
+        elif data_range == '5_days':
             span = "week"
-        elif data_range == '1_month':
-            span = "month"
+            interval = "hour"
         elif data_range == '3_months':
             span = "3month"
+            interval = "day"
         elif data_range == '1_year':
             span = "year"
             interval = "day"
