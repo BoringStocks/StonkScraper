@@ -22,7 +22,7 @@ class Robinhood:
 
         time_delta = abs(datetime.strptime(cls.login_time, format) - datetime.strptime(current_time, format))
 
-        # Relogin after 22 hours
+        # Relog after 22 hours
         if time_delta.total_seconds() >= 79200:
             Robinhood.login()
 
@@ -52,9 +52,7 @@ class Robinhood:
         response = r.stocks.get_stock_historicals(
             ticker, interval=interval, span=span)
         
-        # Check if data doesn't exist
         if response[0] == None:
-            print('Bad ticker, responding with error 400')
             return False
 
         historical = []
@@ -96,17 +94,14 @@ class Robinhood:
             with open('data.json', 'r') as data_json:
                 old_data = json.load(data_json)
 
-            print(f"Old index: {old_data['symbol']}")
-            print(f"New index: {ticker_data['symbol']}")
-            print(f'Old price: {old_data["current"]}')
-            print(f'New price: {ticker_data["current"]}')
-            # TODO: Add check to ensure stock is the same as previous request
-            ticker_data["points_change"] = round(float(old_data["current"] - ticker_data["current"]),2)
-            print(f'Points change: {ticker_data["points_change"]}')
+            # Check if requested ticker matches old ticker
+            if ticker_data["symbol"] == old_data["symbol"]:
+                ticker_data["points_change"] = round(float(old_data["current"] - ticker_data["current"]),2)
+            else:
+                ticker_data["points_change"] = 0
 
-        # Set points_change to 0 if no previous data for stock index was found
+        # Set points_change to 0 if no previous data for ticker was found
         except:
-            print('No json found')
             ticker_data["points_change"] = 0
 
         # Write new data to json
