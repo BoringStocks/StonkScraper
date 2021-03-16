@@ -81,7 +81,6 @@ class Robinhood:
         ticker_data["market_cap"] = round(float(fundamentals[0]["market_cap"]), 2)
         ticker_data["market_status"] = 0
         ticker_data["name"] = r.stocks.find_instrument_data(ticker)[0]['simple_name']
-        ticker_data['points_change'] = 0
         ticker_data["range"] = {
             "open": round(float(fundamentals[0]["open"]),2),
             "high": round(float(fundamentals[0]["high"]),2),
@@ -91,5 +90,27 @@ class Robinhood:
 
         ticker_data["symbol"] = fundamentals[0]["symbol"]
         ticker_data["timestamp"] = (datetime.utcnow()).strftime("%H:%M:%S")
+
+        # Read json for previous stock price
+        try:
+            with open('data.json', 'r') as data_json:
+                old_data = json.load(data_json)
+
+            print(f"Old index: {old_data['symbol']}")
+            print(f"New index: {ticker_data['symbol']}")
+            print(f'Old price: {old_data["current"]}')
+            print(f'New price: {ticker_data["current"]}')
+            # TODO: Add check to ensure stock is the same as previous request
+            ticker_data["points_change"] = round(float(old_data["current"] - ticker_data["current"]),2)
+            print(f'Points change: {ticker_data["points_change"]}')
+
+        # Set points_change to 0 if no previous data for stock index was found
+        except:
+            print('No json found')
+            ticker_data["points_change"] = 0
+
+        # Write new data to json
+        with open('data.json', 'w') as file:
+            json.dump(ticker_data, file)
 
         return ticker_data
