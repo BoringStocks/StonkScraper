@@ -21,12 +21,6 @@ class Robinhood:
         interval = ""
         span = ""
 
-# 1 day, 5 days, 3 month, 1 year, 5 years
-# 1 day, interval 5minute
-# 5 days, interval 1 hour
-# 3 month, interval day
-# 1 year, interval day
-# 5 year, interval week
 
         if data_range == '1_day':
             span = "day"
@@ -49,6 +43,7 @@ class Robinhood:
         
         # Check if data doesn't exist
         if response[0] == None:
+            print('Bad ticker, responding with error 400')
             return False
 
         historical = []
@@ -59,10 +54,6 @@ class Robinhood:
             })
 
         return {"historical": historical}
-
-        # There's 2 types of errors
-        # 401 Client Error: Unauthorized for url: https://api.robinhood.com/quotes/historicals/?symbols=GME&interval=hour&span=week&bounds=regular
-        # 404 Client Error: Not Found for url: https://api.robinhood.com/quotes/historicals/?symbols=ERDFTCHGVJB&interval=hour&span=week&bounds=regular
 
     @classmethod
     def get_ticker(cls, ticker):
@@ -82,7 +73,6 @@ class Robinhood:
         ticker_data["name"] = r.stocks.find_instrument_data(ticker)[0]['simple_name']
         ticker_data['points_change'] = 0
         ticker_data["range"] = {
-            # need to talk about this, also no close
             "open": round(float(fundamentals[0]["open"]),2),
             "high": round(float(fundamentals[0]["high"]),2),
             "low": round(float(fundamentals[0]["low"]),2),
