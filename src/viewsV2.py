@@ -5,9 +5,7 @@ from datetime import datetime
 import traceback
 from flask_api import status
 
-# https://github.com/jmfernandes/robin_stocks
-# http://www.robin-stocks.com/en/latest/robinhood.html#getting-stock-information
-
+Robinhood.login()
 
 @app.route('/v2/<ticker>')
 def get_all_v2(ticker):
