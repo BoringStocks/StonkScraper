@@ -6,17 +6,26 @@ import robin_stocks.robinhood as r
 
 class Robinhood:
     isAuthentificated = False
+    login_time = ''
 
-    @staticmethod
-    def __login():
+    @classmethod
+    def login(cls):
         email = os.getenv("RH_EMAIL")
         password = os.getenv("RH_PASSWORD")
         r.login(email, password)
+        cls.login_time = (datetime.utcnow()).strftime("%H:%M:%S")
+        
 
     @classmethod
     def get_historical(cls, ticker, data_range):
-        if not cls.isAuthentificated:
-            Robinhood.__login()
+        format = "%H:%M:%S"
+        current_time = (datetime.utcnow()).strftime("%H:%M:%S")
+
+        time_delta = abs(datetime.strptime(cls.login_time, format) - datetime.strptime(current_time, format))
+
+        # Relogin after 22 hours
+        if time_delta.total_seconds() >= 79200:
+            Robinhood.login()
 
         interval = ""
         span = ""
@@ -81,8 +90,5 @@ class Robinhood:
 
         ticker_data["symbol"] = fundamentals[0]["symbol"]
         ticker_data["timestamp"] = (datetime.utcnow()).strftime("%H:%M:%S")
-
-        with open('data.json', 'w') as stock_json:
-            json.dump(ticker_data, stock_json)
 
         return ticker_data
