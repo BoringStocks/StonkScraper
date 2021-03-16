@@ -73,6 +73,7 @@ class Robinhood:
             return False
 
         ticker_data = {}
+        price_change = {}
         ticker_data["current"] = round(float(r.stocks.get_latest_price(ticker)[0]),2)
         ticker_data["volume"] = round(float(fundamentals[0]["volume"]),2)
         ticker_data["avg_volume"] = round(float(fundamentals[0]["average_volume"]), 2)
@@ -96,13 +97,19 @@ class Robinhood:
 
             # Check if requested ticker matches old ticker
             if ticker_data["symbol"] == old_data["symbol"]:
-                ticker_data["points_change"] = round(float(old_data["current"] - ticker_data["current"]),2)
+                price_change['points'] = round(float(old_data["current"] - ticker_data["current"]),2)
+                price_change['percent'] = (price_change['points'] / old_data['current']) * 100
+                ticker_data["points_change"] = price_change
             else:
-                ticker_data["points_change"] = 0
+                price_change['points'] = 0
+                price_change['percent'] = 0
+                ticker_data["points_change"] = price_change
 
-        # Set points_change to 0 if no previous data for ticker was found
+        # Set price_change to 0 if no previous data for ticker was found
         except:
-            ticker_data["points_change"] = 0
+            price_change['points'] = 0
+            price_change['percent'] = 0
+            ticker_data["points_change"] = price_change
 
         # Write new data to json
         with open('data.json', 'w') as file:
