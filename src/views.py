@@ -67,7 +67,7 @@ def get_all(ticker):
 
     except Exception as error:
         traceback.print_exc()
-        
+
         # Run if no JSON found
         print('No JSON found, creating new JSON with requested index')
         stock = Scraper(ticker)
@@ -121,7 +121,7 @@ def get_historical(ticker, data_range):
 def get_current(ticker):
 
     data = {}
-    
+
     stock = Scraper(ticker)
     data['current'] = stock.get_current()
     data['points_change'] = stock.get_points_change()
