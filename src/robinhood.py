@@ -69,58 +69,43 @@ class Robinhood:
         Robinhood.check_login_time()
 
         fundamentals = r.get_fundamentals(ticker)
+        instrument_data = r.find_instrument_data(ticker)
+
+        # Detect invalid index
         if fundamentals[0] == None:
             return False
 
         ticker_data = {}
-        price_change = {}
-        now = (datetime.utcnow()).time()
-
+        ticker_data["market"] = instrument_data[0]["market"].strip("https://api.robinhood.com/markets/")
         ticker_data["current"] = round(float(r.stocks.get_latest_price(ticker)[0]),2)
         ticker_data["volume"] = round(float(fundamentals[0]["volume"]),2)
         ticker_data["avg_volume"] = round(float(fundamentals[0]["average_volume"]), 2)
         ticker_data["market_cap"] = round(float(fundamentals[0]["market_cap"]), 2)
-
-        # Check if market is open/closed
-        if now >= time(14, 30, 0) and now <= time(21, 0, 0):
-            ticker_data["market_status"] = 1
-        else:
-            ticker_data["market_status"] = 0
-
-        ticker_data["name"] = r.stocks.find_instrument_data(ticker)[0]['simple_name']
+        ticker_data["name"] = r.stocks.find_instrument_data(ticker)[0]["simple_name"]
         ticker_data["range"] = {
             "open": round(float(fundamentals[0]["open"]),2),
             "high": round(float(fundamentals[0]["high"]),2),
             "low": round(float(fundamentals[0]["low"]),2),
             "date": fundamentals[0]["market_date"]
         }
-
         ticker_data["symbol"] = fundamentals[0]["symbol"]
         ticker_data["timestamp"] = (datetime.utcnow()).strftime("%H:%M:%S")
 
-        # Read json for previous stock price
-        try:
-            with open('data.json', 'r') as data_json:
-                old_data = json.load(data_json)
+        # Calculate points and percent change
+        price_change = {}
+        price_change["points"] = round(float(ticker_data["current"] - ticker_data["range"]["open"]),2)
+        price_change["percent"] = round(float(price_change["points"] / ticker_data["range"]["open"] * 100),2)
+        ticker_data["points_change"] = price_change
 
-            # Check if requested ticker matches old ticker
-            if ticker_data["symbol"] == old_data["symbol"]:
-                price_change['points'] = round(float(old_data["current"] - ticker_data["current"]),2)
-                price_change['percent'] = (price_change['points'] / old_data['current']) * 100
-                ticker_data["points_change"] = price_change
-            else:
-                price_change['points'] = 0
-                price_change['percent'] = 0
-                ticker_data["points_change"] = price_change
+        # Market status calculation
+        market_hours = r.get_market_hours(ticker_data["market"], datetime.utcnow().strftime("%Y-%m-%d"))
+        open_time = (lambda y: datetime.strptime(y, "%Y-%m-%d %H:%M:%S") )((lambda x: x.strip("Z").replace("T", " ") )(market_hours["opens_at"]))
+        close_time = (lambda y: datetime.strptime(y, "%Y-%m-%d %H:%M:%S") )((lambda x: x.strip("Z").replace("T", " ") )(market_hours["closes_at"]))
+        now = datetime.utcnow()
 
-        # Set price_change to 0 if no previous data for ticker was found
-        except:
-            price_change['points'] = 0
-            price_change['percent'] = 0
-            ticker_data["points_change"] = price_change
-
-        # Write new data to json
-        with open('data.json', 'w') as file:
-            json.dump(ticker_data, file)
+        if now >= open_time and now <= close_time:
+            ticker_data["market_status"] = 1
+        else:
+            ticker_data["market_status"] = 0
 
         return ticker_data
