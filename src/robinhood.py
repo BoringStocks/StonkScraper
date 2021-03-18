@@ -22,7 +22,7 @@ class Robinhood:
 
         time_delta = abs(datetime.strptime(cls.login_time, format) - datetime.strptime(current_time, format))
 
-        # Relog after 22 hours
+        # Relogin after 22 hours
         if time_delta.total_seconds() >= 79200:
             Robinhood.login()
 
@@ -70,13 +70,13 @@ class Robinhood:
 
         fundamentals = r.get_fundamentals(ticker)
         instrument_data = r.find_instrument_data(ticker)
+        market_symbol = instrument_data[0]["market"].strip("https://api.robinhood.com/markets/")
 
         # Detect invalid index
         if fundamentals[0] == None:
             return False
 
         ticker_data = {}
-        ticker_data["market"] = instrument_data[0]["market"].strip("https://api.robinhood.com/markets/")
         ticker_data["current"] = round(float(r.stocks.get_latest_price(ticker)[0]),2)
         ticker_data["volume"] = round(float(fundamentals[0]["volume"]),2)
         ticker_data["avg_volume"] = round(float(fundamentals[0]["average_volume"]), 2)
@@ -98,13 +98,16 @@ class Robinhood:
         ticker_data["points_change"] = price_change
 
         # Market status calculation
-        market_hours = r.get_market_hours(ticker_data["market"], datetime.utcnow().strftime("%Y-%m-%d"))
-        open_time = (lambda y: datetime.strptime(y, "%Y-%m-%d %H:%M:%S") )((lambda x: x.strip("Z").replace("T", " ") )(market_hours["opens_at"]))
-        close_time = (lambda y: datetime.strptime(y, "%Y-%m-%d %H:%M:%S") )((lambda x: x.strip("Z").replace("T", " ") )(market_hours["closes_at"]))
-        now = datetime.utcnow()
+        market_hours = r.get_market_hours(market_symbol, datetime.utcnow().strftime("%Y-%m-%d"))
 
-        if now >= open_time and now <= close_time:
-            ticker_data["market_status"] = 1
+        if market_hours["opens_at"] != None:
+            open_time = (lambda y: datetime.strptime(y, "%Y-%m-%d %H:%M:%S") )((lambda x: x.strip("Z").replace("T", " ") )(market_hours["opens_at"]))
+            close_time = (lambda y: datetime.strptime(y, "%Y-%m-%d %H:%M:%S") )((lambda x: x.strip("Z").replace("T", " ") )(market_hours["closes_at"]))
+            now = datetime.utcnow()
+            if now >= open_time and now <= close_time:
+                ticker_data["market_status"] = 1
+            else:
+                ticker_data["market_status"] = 0
         else:
             ticker_data["market_status"] = 0
 
