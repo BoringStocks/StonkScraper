@@ -9,8 +9,6 @@ Robinhood.login()
 
 @app.route('/v2/<ticker>')
 def get_all_v2(ticker):
-    print(f'{ticker} requested at {datetime.utcnow()}')
-
     data = Robinhood.get_ticker(ticker)
 
     if not data:
