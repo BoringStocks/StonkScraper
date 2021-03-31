@@ -5,5 +5,4 @@ from dotenv import load_dotenv
 app = Flask(__name__, static_folder="")
 CORS(app)
 
-from src import views  # nopep8
 from src import viewsV2  # nopep8
