@@ -70,6 +70,7 @@ class Robinhood:
 
         fundamentals = r.get_fundamentals(ticker)
         instrument_data = r.find_instrument_data(ticker)
+        quotes = r.stocks.get_quotes(ticker)
         market_symbol = instrument_data[0]["market"].strip("https://api.robinhood.com/markets/")
 
         # Detect invalid index
@@ -93,8 +94,8 @@ class Robinhood:
 
         # Calculate points and percent change
         price_change = {}
-        price_change["points"] = round(float(ticker_data["current"] - ticker_data["range"]["open"]),2)
-        price_change["percent"] = round(float(price_change["points"] / ticker_data["range"]["open"] * 100),2)
+        price_change["points"] = round(float(ticker_data["current"] - float(quotes[0]["previous_close"])),2)
+        price_change["percent"] = round(float(price_change["points"] / float(quotes[0]["previous_close"]) * 100),2)
         ticker_data["points_change"] = price_change
 
         # Market status calculation
