@@ -78,7 +78,7 @@ class Robinhood:
             return False
 
         ticker_data = {}
-        ticker_data["current"] = round(float(r.stocks.get_latest_price(ticker)[0]),2)
+        ticker_data["current"] = round(float(r.stocks.get_latest_price(ticker, includeExtendedHours=False)[0]),2)
         ticker_data["volume"] = round(float(fundamentals[0]["volume"]),2)
         ticker_data["avg_volume"] = round(float(fundamentals[0]["average_volume"]), 2)
         ticker_data["market_cap"] = round(float(fundamentals[0]["market_cap"]), 2)
