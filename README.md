@@ -1,108 +1,97 @@
 # __StonkScraper__
-This API is a WIP. Check back often for new features!<br>
 [See a live implementation here!](https://boringstocks.live/)
 
-`StonkScraper` is a lightweight API that scrapes Yahoo's financial pages for a defined stock index. It is minimal by design but returns most of the data that the average daytrader would require to decide whether to buy or sell GME.
+`StonkScraper` is a lightweight API built off the robin_stock API.
 
 ## Usage
 
 Primary endpoint: `http://api.boringstocks.live/`
 
-### Current Index Data
-Request `https://api.boringstocks.live/v1/<stock_index>`<br>
-`StonkScraper` returns a JSON containing these data points:
-  - Current price
-  - Range of historical data (not including the current day)
-  - Market cap
-  - Market status (open/close)
-  - Opening price
-  - Price change (points & percent)
-  - Day's range (date, high, low, & close)
-  - Index
-  - Timestamp
-  - Average volume
-  - Volume
+### Index Data
+Request `https://api.boringstocks.live/v2/<stock_index>`<br>
+`StonkScraper` returns a JSON containing:
 
-### Historical Index Data
-`StonkScraper` can also return the historical data ending on the current date.<br>
-Request `https://api.boringstocks.live/v1/<stock_index>/historical/<data_range>`
-Desired Range | <data_range>
-------------- | ------------
-5 days | 5_days
-1 month | 1_month
-6 months | 6_months
-1 year | 1_year
-All historical data | max
+Data | Key | Type
+---- | --- | ----
+Current price | `"current"` | float
+Market cap | `"market_cap"` | float
+Market status (closed/open) | `"market_status"` | int (0 & 1) 
+Index name | `"name"` | string
+Points/Percent change | `"points_change"` | dict
+Price ranges (date/high/low/open) | `"range"` | dict
+Index symbol | `"symbol"` | string
+Timestamp | `"timestamp"` | string
+Average volume | `"avg_volume"` | float
+Volume | `"volume"` | float
 
-## Examples
-Requesting `https://api.boringstocks.live/v1/GOOG`:
+
+### Historical Data
+`StonkScraper` can also return historical data terminating on the current date.<br>
+Request `https://api.boringstocks.live/v2/<stock_index>/historical/<data_range>`
+
+Desired Range | <data_range> | Increment size
+------------- | ------------ | --------------
+Today | `1_day` | 5 mins
+5 days | `5_days` | 1 hour
+3 months | `3_months` | 1 day
+1 year | `1_year` | 1 day
+5 years | `5_years` | 1 week
+
+JSON format:
 ```javascript
 {
-  "avg_volume": 1571006.0, 
-  "current": 2117.2, 
   "historical": [
     {
-      "close": 2104.11, 
-      "date": "2021-02-12"
-    }, 
-    {
-      "close": 2121.9, 
-      "date": "2021-02-16"
-    }, 
-    {
-      "close": 2128.31, 
-      "date": "2021-02-17"
-    }, 
-    {
-      "close": 2117.2, 
-      "date": "2021-02-18"
-    }
-  ], 
-  "market_cap": "1.424T", 
-  "market_status": 0, 
-  "name": "Alphabet Inc.", 
-  "open": 2110.39, 
-  "points_change": {
-    "percent": -0.52, 
-    "points": -11.11
-  }, 
-  "range": {
-    "close": 2117.2, 
-    "date": "2021-02-18", 
-    "high": 2132.74, 
-    "low": 2104.28
-  }, 
-  "symbol": "GOOG", 
-  "timestamp": "03:58:01", 
-  "volume": 1121855.0
+      "close": "622.625600", 
+      "date": "2021-03-25T14:00:00Z"
+    },
+    ...
 }
 ```
-<br>Requesting `https://api.boringstocks.live/v1/GOOG/historical/5_days`:
+
+## Examples
+Requesting `https://api.boringstocks.live/v2/TSLA`:
+```javascript
+{
+  "avg_volume": 39377741.1, 
+  "current": 667.93, 
+  "market_cap": 661020996284.5, 
+  "market_status": 0, 
+  "name": "Tesla", 
+  "points_change": {
+    "percent": 5.08, 
+    "points": 32.31
+  }, 
+  "range": {
+    "date": "2021-03-31", 
+    "high": 672.0, 
+    "low": 641.12, 
+    "open": 646.25
+  }, 
+  "symbol": "TSLA", 
+  "timestamp": "22:05:25", 
+  "volume": 33255670.0
+}
+```
+<br>Requesting `https://api.boringstocks.live/v2/tsla/historical/5_days`:
 ```python
-{ "historical": 
-  [
+{
+  "historical": [
     {
-      "close": 2104.11, 
-      "date": "2021-02-12"
+      "close": "622.625600", 
+      "date": "2021-03-25T14:00:00Z"
     }, 
     {
-      "close": 2121.9, 
-      "date": "2021-02-16"
+      "close": 631.99500, 
+      "date": "2021-03-25T15:00:00Z"
     }, 
-    {
-      "close": 2128.31, 
-      "date": "2021-02-17"
-    }, 
-    {
-      "close": 2117.2, 
-      "date": "2021-02-18"
-    }
+    ...
   ]
 }
 ```
 
 ### License
-`StonkScraper` is available under the MIT license. See the [LICENSE](https://github.com/BoringStocks/StonkScraper/blob/dev/LICENSE) file for more info.
+`StonkScraper` is available under the MIT license. See the [LICENSE](https://github.com/BoringStocks/StonkScraper/blob/dev/LICENSE) for more info.
 
 ### Disclaimer
-`StonkScraper` uses Yahoo Finance to aggregate its data. No copyright infringement intended.
+`StonkScraper` uses robin_stocks. No copyright infringement intended.
