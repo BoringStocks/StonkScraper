@@ -59,7 +59,7 @@ class Robinhood:
         for day in response:
             historical.append({
                 "date": day["begins_at"],
-                "close": day["close_price"]
+                "close": round(float(day["close_price"]),2)
             })
 
         return {"historical": historical}
