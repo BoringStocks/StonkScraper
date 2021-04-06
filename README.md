@@ -4,11 +4,11 @@
 `StonkScraper` is a lightweight API built off the robin_stock API.
 
 ## Usage
-
-Primary endpoint: `http://api.boringstocks.live/v2`
+Primary endpoint: `http://api.boringstocks.live/v2`<br>
+Index data: HTTP GET  `https://api.boringstocks.live/v2/<stock_index>`<br>
+Historical data: HTTP GET `https://api.boringstocks.live/v2/<stock_index>/historical/<data_range>`
 
 ### Index Data
-HTTP GET:  `https://api.boringstocks.live/v2/<stock_index>`<br>
 `StonkScraper` returns a JSON containing:
 
 Data | Key | Type
@@ -26,8 +26,7 @@ Volume | `"volume"` | float
 
 
 ### Historical Data
-`StonkScraper` can also return historical data terminating on the current date.<br>
-HTTP GET: `https://api.boringstocks.live/v2/<stock_index>/historical/<data_range>`
+`StonkScraper` returns a JSON containing:
 
 Desired Range | <data_range> | Increment size
 ------------- | ------------ | --------------
@@ -94,4 +93,4 @@ Requesting `https://api.boringstocks.live/v2/TSLA`:
 `StonkScraper` is available under the MIT license. See the [LICENSE](https://github.com/BoringStocks/StonkScraper/blob/dev/LICENSE) for more info.
 
 ### Disclaimer
-`StonkScraper` uses robin_stocks. No copyright infringement intended.
+`StonkScraper` uses [robin_stocks](https://github.com/jmfernandes/robin_stocks). No copyright infringement intended.
