@@ -27,7 +27,7 @@ Volume | `"volume"` | float
 
 ### Historical Data
 `StonkScraper` can also return historical data terminating on the current date.<br>
-Request `https://api.boringstocks.live/v2/<stock_index>/historical/<data_range>`
+HTTP GET: `https://api.boringstocks.live/v2/<stock_index>/historical/<data_range>`
 
 Desired Range | <data_range> | Increment size
 ------------- | ------------ | --------------
