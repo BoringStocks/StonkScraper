@@ -5,7 +5,7 @@
 
 ## Usage
 
-Primary endpoint: `http://api.boringstocks.live/`
+Primary endpoint: `http://api.boringstocks.live/v2`
 
 ### Index Data
 Request `https://api.boringstocks.live/v2/<stock_index>`<br>
