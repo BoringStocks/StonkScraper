@@ -8,7 +8,7 @@
 Primary endpoint: `http://api.boringstocks.live/v2`
 
 ### Index Data
-Request `https://api.boringstocks.live/v2/<stock_index>`<br>
+HTTP GET:  `https://api.boringstocks.live/v2/<stock_index>`<br>
 `StonkScraper` returns a JSON containing:
 
 Data | Key | Type
