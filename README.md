@@ -1,7 +1,7 @@
 # __StonkScraper__
 [See a live implementation here!](https://boringstocks.live/)
 
-`StonkScraper` is a lightweight API built off the robin_stock API.
+`StonkScraper` is a lightweight API built off the [robin_stocks](https://github.com/jmfernandes/robin_stocks) API.
 
 ## Usage
 Primary endpoint: `http://api.boringstocks.live/v2`<br>
