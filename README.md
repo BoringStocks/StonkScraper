@@ -26,7 +26,7 @@ Volume | `"volume"` | float
 
 
 ### Historical Data
-`StonkScraper` returns a JSON containing:
+Possible end points for `https://api.boringstocks.live/v2/<stock_index>/historical/<data_range>`
 
 Desired Range | <data_range> | Increment size
 ------------- | ------------ | --------------
